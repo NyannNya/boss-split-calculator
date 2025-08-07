@@ -10,43 +10,52 @@
     <div class="container">
         <h1>公會分帳小工具</h1>
 
-        <section id="member-info">
-            <h2>成員資訊</h2>
-            <div class="form-group">
-                <label for="num-members">人數:</label>
-                <input type="number" id="num-members" min="1" value="1">
-                <button id="generate-members">生成成員欄位</button>
-            </div>
-            <div id="members-container">
-                <!-- 成員輸入欄位將在此處動態生成 -->
-            </div>
-        </section>
+        <div class="main-content">
+            <section id="member-info">
+                <h2>成員資訊</h2>
+                <div class="form-group">
+                    <label for="num-members">人數:</label>
+                    <input type="number" id="num-members" min="1" value="1">
+                    <button id="generate-members">生成成員欄位</button>
+                </div>
+                <div id="members-container">
+                    <!-- 成員輸入欄位將在此處動態生成 -->
+                </div>
+            </section>
 
-        <section id="sale-info">
-            <h2>銷售資訊</h2>
-            <div id="sales-container">
-                <!-- 銷售項目將在此處動態生成 -->
-                <div class="sale-item">
-                    <div class="form-group">
-                        <label>王的名稱:</label>
-                        <input type="text" class="boss-name" value="">
-                    </div>
-                    <div class="form-group">
-                        <label>打到的東西:</label>
-                        <input type="text" class="item-name" value="">
-                    </div>
-                    <div class="form-group">
-                        <label>銷售價格:</label>
-                        <input type="number" class="item-price" min="0" value="0">
-                    </div>
-                    <div class="form-group">
-                        <label>NESO:</label>
-                        <input type="number" class="neso-price" min="0" value="0">
+            <section id="sale-info">
+                <h2>銷售資訊</h2>
+                <div id="boss-sales-container">
+                    <!-- BOSS 銷售區塊將在此處動態生成 -->
+                    <div class="boss-group">
+                        <div class="form-group">
+                            <label>王的名稱:</label>
+                            <input type="text" class="boss-name-group" value="BOSS 1">
+                            <button class="remove-boss-group">移除此BOSS</button>
+                        </div>
+                        <div class="sales-items-container">
+                            <div class="sale-item">
+                                <div class="form-group">
+                                    <label>打到的東西:</label>
+                                    <input type="text" class="item-name" value="">
+                                </div>
+                                <div class="form-group">
+                                    <label>銷售價格:</label>
+                                    <input type="number" class="item-price" min="0" value="0">
+                                </div>
+                                <div class="form-group">
+                                    <label>NESO:</label>
+                                    <input type="number" class="neso-price" min="0" value="0">
+                                </div>
+                                <button class="remove-sale-item">移除</button>
+                            </div>
+                        </div>
+                        <button class="add-sale-item-to-boss">新增銷售項目</button>
                     </div>
                 </div>
-            </div>
-            <button id="add-sale-item">新增銷售項目</button>
-        </section>
+                <button id="add-boss-group">新增 BOSS 區塊</button>
+            </section>
+        </div>
 
         <section id="distribution-setting">
             <h2>分帳設定</h2>

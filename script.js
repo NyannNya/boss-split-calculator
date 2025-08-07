@@ -11,8 +11,8 @@ const data = {
 const numMembersInput = document.getElementById('num-members');
 const generateMembersButton = document.getElementById('generate-members');
 const membersContainer = document.getElementById('members-container');
-const addSaleItemButton = document.getElementById('add-sale-item');
-const salesContainer = document.getElementById('sales-container');
+const addBossGroupButton = document.getElementById('add-boss-group');
+const bossSalesContainer = document.getElementById('boss-sales-container');
 const averageDistributionRadio = document.getElementById('average-distribution');
 const customDistributionRadio = document.getElementById('custom-distribution');
 const customShareContainer = document.getElementById('custom-share-container');
@@ -64,15 +64,11 @@ function updateCustomShareFields() {
     }
 }
 
-// 函數：新增銷售項目
-function addSaleItem() {
+// 函數：新增銷售項目到指定的 BOSS 區塊
+function addSaleItemToBoss(salesItemsContainer) {
     const saleItemDiv = document.createElement('div');
     saleItemDiv.classList.add('sale-item');
     saleItemDiv.innerHTML = `
-        <div class="form-group">
-            <label>王的名稱:</label>
-            <input type="text" class="boss-name">
-        </div>
         <div class="form-group">
             <label>打到的東西:</label>
             <input type="text" class="item-name">
@@ -82,17 +78,47 @@ function addSaleItem() {
             <input type="number" class="item-price" min="0" value="0">
         </div>
         <div class="form-group">
-            <label> NESO:</label>
+            <label>NESO:</label>
             <input type="number" class="neso-price" min="0" value="0">
         </div>
         <button class="remove-sale-item">移除</button>
     `;
-    salesContainer.appendChild(saleItemDiv);
+    salesItemsContainer.appendChild(saleItemDiv);
 
-    // 為新的移除按鈕添加事件監聽器
     saleItemDiv.querySelector('.remove-sale-item').addEventListener('click', function() {
         saleItemDiv.remove();
-        updateDataFromInputs(); // 移除後更新數據
+        updateDataFromInputs();
+    });
+}
+
+// 函數：新增 BOSS 區塊
+function addBossGroup() {
+    const bossGroupDiv = document.createElement('div');
+    bossGroupDiv.classList.add('boss-group');
+    bossGroupDiv.innerHTML = `
+        <div class="form-group">
+            <label>王的名稱:</label>
+            <input type="text" class="boss-name-group" value="BOSS ${bossSalesContainer.children.length + 1}">
+            <button class="remove-boss-group">移除此BOSS</button>
+        </div>
+        <div class="sales-items-container">
+            <!-- 銷售項目將在此處動態生成 -->
+        </div>
+        <button class="add-sale-item-to-boss">新增銷售項目</button>
+    `;
+    bossSalesContainer.appendChild(bossGroupDiv);
+
+    const salesItemsContainer = bossGroupDiv.querySelector('.sales-items-container');
+    addSaleItemToBoss(salesItemsContainer); // 為新的 BOSS 區塊添加一個預設銷售項目
+
+    bossGroupDiv.querySelector('.remove-boss-group').addEventListener('click', function() {
+        bossGroupDiv.remove();
+        updateDataFromInputs();
+    });
+
+    bossGroupDiv.querySelector('.add-sale-item-to-boss').addEventListener('click', function() {
+        addSaleItemToBoss(salesItemsContainer);
+        updateDataFromInputs();
     });
 }
 
@@ -108,12 +134,14 @@ function updateDataFromInputs() {
 
     // 更新銷售資訊
     data.sales = [];
-    document.querySelectorAll('#sales-container .sale-item').forEach(item => {
-        const bossName = item.querySelector('.boss-name').value;
-        const itemName = item.querySelector('.item-name').value;
-        const itemPrice = parseFloat(item.querySelector('.item-price').value) || 0;
-        const nesoPrice = parseFloat(item.querySelector('.neso-price').value) || 0;
-        data.sales.push({ bossName, item: itemName, price: itemPrice, neso: nesoPrice });
+    document.querySelectorAll('#boss-sales-container .boss-group').forEach(bossGroup => {
+        const bossName = bossGroup.querySelector('.boss-name-group').value;
+        bossGroup.querySelectorAll('.sale-item').forEach(item => {
+            const itemName = item.querySelector('.item-name').value;
+            const itemPrice = parseFloat(item.querySelector('.item-price').value) || 0;
+            const nesoPrice = parseFloat(item.querySelector('.neso-price').value) || 0;
+            data.sales.push({ bossName, item: itemName, price: itemPrice, neso: nesoPrice });
+        });
     });
 
     // 更新分帳設定
@@ -235,20 +263,34 @@ function loadDataFromUrl() {
             });
 
             // 填充銷售資訊
-            salesContainer.innerHTML = ''; // 清空現有銷售項目
+            bossSalesContainer.innerHTML = ''; // 清空現有 BOSS 區塊
+            let currentBossGroup = null;
+            let currentBossName = '';
+
             data.sales.forEach(sale => {
-                addSaleItem(); // 添加新的銷售項目欄位
-                const lastSaleItem = salesContainer.lastElementChild;
-                if (lastSaleItem) {
-                    lastSaleItem.querySelector('.boss-name').value = sale.bossName || '';
-                    lastSaleItem.querySelector('.item-name').value = sale.item;
-                    lastSaleItem.querySelector('.item-price').value = sale.price;
-                    lastSaleItem.querySelector('.neso-price').value = sale.neso || 0;
+                if (sale.bossName !== currentBossName) {
+                    addBossGroup(); // 添加新的 BOSS 區塊
+                    currentBossGroup = bossSalesContainer.lastElementChild;
+                    currentBossName = sale.bossName;
+                    if (currentBossGroup) {
+                        currentBossGroup.querySelector('.boss-name-group').value = currentBossName;
+                        currentBossGroup.querySelector('.sales-items-container').innerHTML = ''; // 清空預設的銷售項目
+                    }
+                }
+                if (currentBossGroup) {
+                    addSaleItemToBoss(currentBossGroup.querySelector('.sales-items-container'));
+                    const lastSaleItem = currentBossGroup.querySelector('.sales-items-container').lastElementChild;
+                    if (lastSaleItem) {
+                        lastSaleItem.querySelector('.item-name').value = sale.item;
+                        lastSaleItem.querySelector('.item-price').value = sale.price;
+                        lastSaleItem.querySelector('.neso-price').value = sale.neso || 0;
+                    }
                 }
             });
-            // 如果沒有銷售項目，則添加一個空的
+
+            // 如果沒有銷售項目，則添加一個空的 BOSS 區塊
             if (data.sales.length === 0) {
-                addSaleItem();
+                addBossGroup();
             }
 
 
@@ -285,7 +327,7 @@ function loadDataFromUrl() {
 
 // 事件監聽器
 generateMembersButton.addEventListener('click', generateMemberFields);
-addSaleItemButton.addEventListener('click', addSaleItem);
+addBossGroupButton.addEventListener('click', addBossGroup);
 calculateButton.addEventListener('click', calculateDistribution);
 
 averageDistributionRadio.addEventListener('change', () => {

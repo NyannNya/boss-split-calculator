@@ -6,12 +6,23 @@ body {
 }
 
 .container {
-    max-width: 900px;
+    max-width: 1200px; /* 增加最大寬度以容納水平佈局 */
     margin: 0 auto;
     background-color: #fff;
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.main-content {
+    display: flex; /* 啟用 Flexbox */
+    justify-content: space-between; /* 元素之間留有空間 */
+    gap: 20px; /* 元素之間的間距 */
+}
+
+.main-content section {
+    flex: 1; /* 讓兩個 section 平均分配空間 */
+    min-width: 45%; /* 確保在小螢幕上有最小寬度 */
 }
 
 h1, h2 {
@@ -61,13 +72,85 @@ button:hover {
     background-color: #0056b3;
 }
 
-#members-container .member-item,
-#sales-container .sale-item {
+#members-container .member-item {
     border: 1px solid #eee;
     padding: 10px;
     margin-bottom: 10px;
     border-radius: 5px;
     background-color: #fff;
+}
+
+.boss-group {
+    border: 1px solid #ccc;
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    background-color: #f0f8ff; /* 淺藍色背景，區分 BOSS 區塊 */
+}
+
+.boss-group .form-group {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.boss-group .form-group label {
+    flex-shrink: 0; /* 防止 label 縮小 */
+    margin-right: 10px;
+}
+
+.boss-group .form-group input[type="text"] {
+    flex-grow: 1; /* 讓輸入框佔據剩餘空間 */
+}
+
+.sales-items-container {
+    margin-top: 10px;
+    padding-left: 20px; /* 縮排銷售項目 */
+    border-left: 2px solid #add8e6; /* 左邊框線 */
+}
+
+.sale-item {
+    border: 1px solid #eee;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    background-color: #fff;
+    display: flex; /* 讓銷售項目內的元素水平排列 */
+    align-items: center;
+    gap: 10px; /* 元素之間的間距 */
+}
+
+.sale-item .form-group {
+    margin-bottom: 0; /* 移除內部 form-group 的下邊距 */
+    flex: 1; /* 讓每個 form-group 平均分配空間 */
+}
+
+.sale-item .form-group label {
+    width: auto; /* 自動寬度 */
+    margin-right: 5px;
+}
+
+.sale-item .form-group input {
+    width: auto; /* 自動寬度 */
+    flex-grow: 1; /* 讓輸入框佔據剩餘空間 */
+}
+
+.remove-sale-item, .remove-boss-group {
+    background-color: #dc3545; /* 紅色按鈕 */
+    margin-left: 10px;
+}
+
+.remove-sale-item:hover, .remove-boss-group:hover {
+    background-color: #c82333;
+}
+
+.add-sale-item-to-boss {
+    margin-top: 10px;
+    background-color: #28a745; /* 綠色按鈕 */
+}
+
+.add-sale-item-to-boss:hover {
+    background-color: #218838;
 }
 
 #result-table {
