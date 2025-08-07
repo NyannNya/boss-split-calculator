@@ -3,80 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>公會分帳小工具</title>
+    <title>分帳小工具</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
-        <h1>公會分帳小工具</h1>
+        <h1>分帳小工具</h1>
 
         <div class="main-layout">
-            <section id="member-distribution-section">
-                <h2>成員與分帳設定</h2>
-                <div class="form-group">
-                    <label for="num-members">人數:</label>
-                    <input type="number" id="num-members" min="1" value="1">
-                    <button id="generate-members">生成成員欄位</button>
-                </div>
-                <div id="members-container">
-                    <!-- 成員輸入欄位將在此處動態生成 -->
-                </div>
-
-                <h3>分帳設定</h3>
-                <div class="form-group">
-                    <label>分配方式:</label>
-                    <input type="radio" id="average-distribution" name="distribution-method" value="average" checked>
-                    <label for="average-distribution">平均分配</label>
-                    <input type="radio" id="custom-distribution" name="distribution-method" value="custom">
-                    <label for="custom-distribution">自訂分配比</label>
-                </div>
-                <div id="custom-share-container" style="display: none;">
-                    <!-- 自訂分配比輸入欄位將在此處動態生成 -->
-                </div>
-                <div class="form-group">
-                    <label for="fee">銷售手續費 (%):</label>
-                    <input type="number" id="fee" min="0" max="100" value="5">
-                </div>
-                <button id="calculate-button">計算</button>
-            </section>
-
-            <section id="sale-info">
-                <h2>銷售資訊</h2>
-                <div id="boss-sales-container">
-                    <!-- BOSS 銷售區塊將在此處動態生成 -->
+            <section id="boss-allocation-section">
+                <h2>BOSS 道具分配</h2>
+                <div id="boss-groups-container">
+                    <!-- BOSS 分配區塊將在此處動態生成 -->
                     <div class="boss-group">
-                        <div class="form-group boss-name-row">
-                            <label>王的名稱:</label>
-                            <input type="text" class="boss-name-group" value="BOSS 1">
-                            <button class="remove-boss-group">移除此BOSS</button>
+                        <div class="boss-header">
+                            <h3 class="boss-name-display">選擇 BOSS</h3>
+                            <select class="boss-name-select">
+                                <!-- BOSS 選項將在此處動態生成 -->
+                            </select>
+                            <button class="remove-boss-group">移除此 BOSS</button>
                         </div>
-                        <div class="sales-items-container">
-                            <div class="sale-item">
-                                <div class="form-group">
-                                    <label>道具名稱:</label>
-                                    <input type="text" class="item-name" value="">
-                                </div>
-                                <div class="form-group">
-                                    <label>道具獲得者:</label>
-                                    <select class="item-owner">
-                                        <!-- 成員選項將在此處動態生成 -->
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label>售價:</label>
-                                    <input type="number" class="item-price" min="0" value="0">
-                                </div>
-                                <div class="form-group checkbox-group">
-                                    <input type="checkbox" class="apply-fee" checked>
-                                    <label>扣手續費</label>
-                                </div>
-                                <button class="remove-sale-item">移除</button>
+
+                        <div class="allocation-settings">
+                            <h4>分配對象與比例</h4>
+                            <div class="form-group">
+                                <label>參與人員 (逗號分隔):</label>
+                                <input type="text" class="participants-input" placeholder="例如: PlayerA, PlayerB">
+                            </div>
+                            <div class="form-group">
+                                <label>分配方式:</label>
+                                <input type="radio" class="distribution-method" name="distribution-method-default" value="average" checked>
+                                <label>平均分配</label>
+                                <input type="radio" class="distribution-method" name="distribution-method-default" value="custom">
+                                <label>自訂分配比</label>
+                            </div>
+                            <div class="custom-share-container" style="display: none;">
+                                <!-- 自訂分配比輸入欄位將在此處動態生成 -->
+                            </div>
+                            <div class="form-group">
+                                <label>銷售手續費 (%):</label>
+                                <input type="number" class="fee-input" min="0" max="100" value="5">
                             </div>
                         </div>
-                        <button class="add-sale-item-to-boss">新增銷售項目</button>
+
+                        <div class="boss-items-container">
+                            <h4>BOSS 掉落道具</h4>
+                            <div class="item-list">
+                                <!-- 道具列表將在此處動態生成 -->
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <button id="add-boss-group">新增 BOSS 區塊</button>
+                <button id="add-boss-group">新增 BOSS 分配區塊</button>
             </section>
         </div>
 
@@ -85,16 +63,15 @@
             <table id="result-table">
                 <thead>
                     <tr>
-                        <th>成員名稱</th>
-                        <th>應得金額</th>
-                        <th>錢包地址</th>
+                        <th>支付方</th>
+                        <th>接收方</th>
+                        <th>金額</th>
                     </tr>
                 </thead>
                 <tbody>
                     <!-- 結果將在此處顯示 -->
                 </tbody>
             </table>
-            <button id="copy-result">複製分帳結果</button>
             <h3>分享連結</h3>
             <textarea id="share-link" rows="3" readonly></textarea>
             <button id="copy-share-link">複製分享連結</button>

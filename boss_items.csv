@@ -1,0 +1,312 @@
+boss_name,item_name,image_url
+zakum-chaos,Red Florin,https://api-static.msu.io/itemimages/icon/4310403.png
+zakum-chaos,Chaos Zakum Helmet,https://api-static.msu.io/itemimages/icon/1003112.png
+zakum-chaos,Enraged Zakum Helmet,https://api-static.msu.io/itemimages/icon/1004637.png
+zakum-chaos,Condensed Power Crystal,https://api-static.msu.io/itemimages/icon/1012478.png
+zakum-chaos,Aquatic Letter Eye Accessory,https://api-static.msu.io/itemimages/icon/1022231.png
+zakum-chaos,Enraged Zakum Cape,https://api-static.msu.io/itemimages/icon/1102871.png
+zakum-chaos,Enraged Zakum Belt,https://api-static.msu.io/itemimages/icon/1132296.png
+zakum-chaos,Chaos Zakum's Tree Branch,https://api-static.msu.io/itemimages/icon/1372073.png
+zakum-chaos,Honeybee Wings,https://api-static.msu.io/itemimages/icon/1102338.png
+zakum-chaos,Golden Honey Pot,https://api-static.msu.io/itemimages/icon/1703416.png
+zakum-chaos,Lord Zakum Throne,https://api-static.msu.io/itemimages/icon/3010455.png
+zakum-chaos,Scary Toy Gift,https://api-static.msu.io/itemimages/icon/3010683.png
+zakum-chaos,neso (big),https://msu.io/marketplace/images/neso.png
+zakum-chaos,neso (small),https://msu.io/marketplace/images/neso.png
+hilla-hard,Red Florin,https://api-static.msu.io/itemimages/icon/4310403.png
+hilla-hard,Necromancer Warrior Hat,https://api-static.msu.io/itemimages/icon/1004214.png
+hilla-hard,Necromancer Magician Hat,https://api-static.msu.io/itemimages/icon/1004215.png
+hilla-hard,Necromancer Sentinel Hat,https://api-static.msu.io/itemimages/icon/1004216.png
+hilla-hard,Necromancer Chaser Hat,https://api-static.msu.io/itemimages/icon/1004217.png
+hilla-hard,Necromancer Skipper Hat,https://api-static.msu.io/itemimages/icon/1004218.png
+hilla-hard,Will o' the Wisps,https://api-static.msu.io/itemimages/icon/1032136.png
+hilla-hard,Necromancer Warrior Suit,https://api-static.msu.io/itemimages/icon/1052784.png
+hilla-hard,Necromancer Magician Suit,https://api-static.msu.io/itemimages/icon/1052785.png
+hilla-hard,Necromancer Sentinel Suit,https://api-static.msu.io/itemimages/icon/1052786.png
+hilla-hard,Necromancer Chaser Suit,https://api-static.msu.io/itemimages/icon/1052787.png
+hilla-hard,Necromancer Skipper Suit,https://api-static.msu.io/itemimages/icon/1052788.png
+hilla-hard,Necromancer Warrior Shoes,https://api-static.msu.io/itemimages/icon/1072952.png
+hilla-hard,Necromancer Magician Shoes,https://api-static.msu.io/itemimages/icon/1072953.png
+hilla-hard,Necromancer Sentinel Shoes,https://api-static.msu.io/itemimages/icon/1072954.png
+hilla-hard,Necromancer Chaser Shoes,https://api-static.msu.io/itemimages/icon/1072955.png
+hilla-hard,Necromancer Skipper Shoes,https://api-static.msu.io/itemimages/icon/1072956.png
+hilla-hard,Necromancer Warrior Gloves,https://api-static.msu.io/itemimages/icon/1082593.png
+hilla-hard,Necromancer Magician Gloves,https://api-static.msu.io/itemimages/icon/1082594.png
+hilla-hard,Necromancer Sentinel Gloves,https://api-static.msu.io/itemimages/icon/1082595.png
+hilla-hard,Necromancer Chaser Gloves,https://api-static.msu.io/itemimages/icon/1082596.png
+hilla-hard,Necromancer Skipper Gloves,https://api-static.msu.io/itemimages/icon/1082597.png
+hilla-hard,Stone of Eternal Life,https://api-static.msu.io/itemimages/icon/1162009.png
+hilla-hard,Necro Terror,https://api-static.msu.io/itemimages/icon/1302213.png
+hilla-hard,Necro Headsplitter,https://api-static.msu.io/itemimages/icon/1312112.png
+hilla-hard,Necro Hammer,https://api-static.msu.io/itemimages/icon/1322151.png
+hilla-hard,Necro Slayer,https://api-static.msu.io/itemimages/icon/1332187.png
+hilla-hard,Necro Wand,https://api-static.msu.io/itemimages/icon/1372132.png
+hilla-hard,Necro Rod,https://api-static.msu.io/itemimages/icon/1382159.png
+hilla-hard,Necro Zweihander,https://api-static.msu.io/itemimages/icon/1402143.png
+hilla-hard,Necro Giant Axe,https://api-static.msu.io/itemimages/icon/1412100.png
+hilla-hard,Necro Maul,https://api-static.msu.io/itemimages/icon/1422103.png
+hilla-hard,Necro Spear,https://api-static.msu.io/itemimages/icon/1432133.png
+hilla-hard,Necro Polearm,https://api-static.msu.io/itemimages/icon/1442171.png
+hilla-hard,Necro Longbow,https://api-static.msu.io/itemimages/icon/1452163.png
+hilla-hard,Necro Crossbow,https://api-static.msu.io/itemimages/icon/1462153.png
+hilla-hard,Necro Bloody Mist,https://api-static.msu.io/itemimages/icon/1472175.png
+hilla-hard,Necro Wolf,https://api-static.msu.io/itemimages/icon/1482136.png
+hilla-hard,Necro Eagle,https://api-static.msu.io/itemimages/icon/1492136.png
+hilla-hard,Catty Hilla,https://api-static.msu.io/itemimages/icon/1005162.png
+hilla-hard,Kiss Mark,https://api-static.msu.io/itemimages/icon/1012009.png
+hilla-hard,Hilla's Style Maker,https://api-static.msu.io/itemimages/icon/3010404.png
+hilla-hard,Blackheart Mount,https://api-static.msu.io/itemimages/icon/3140224.png
+hilla-hard,neso (big),https://msu.io/marketplace/images/neso.png
+hilla-hard,neso (small),https://msu.io/marketplace/images/neso.png
+pierre-chaos,Purified Chaos Yggdrasil Energy,https://api-static.msu.io/itemimages/icon/4310396.png
+pierre-chaos,Red Florin,https://api-static.msu.io/itemimages/icon/4310403.png
+pierre-chaos,Gold Florin,https://api-static.msu.io/itemimages/icon/4310404.png
+pierre-chaos,Chaos Pierre Hat,https://api-static.msu.io/itemimages/icon/1003719.png
+pierre-chaos,Trixter Warrior Pants,https://api-static.msu.io/itemimages/icon/1062165.png
+pierre-chaos,Trixter Dunwitch Pants,https://api-static.msu.io/itemimages/icon/1062166.png
+pierre-chaos,Trixter Ranger Pants,https://api-static.msu.io/itemimages/icon/1062167.png
+pierre-chaos,Trixter Assassin Pants,https://api-static.msu.io/itemimages/icon/1062168.png
+pierre-chaos,Trixter Wanderer Pants,https://api-static.msu.io/itemimages/icon/1062169.png
+pierre-chaos,Maple Momentree Crown B,https://api-static.msu.io/itemimages/icon/1001145.png
+pierre-chaos,Maple Momentree Robe B,https://api-static.msu.io/itemimages/icon/1051717.png
+pierre-chaos,Maple Momentree Shoes B,https://api-static.msu.io/itemimages/icon/1071162.png
+pierre-chaos,Happy Pierre Chair,https://api-static.msu.io/itemimages/icon/3010513.png
+pierre-chaos,neso (big),https://msu.io/marketplace/images/neso.png
+pierre-chaos,neso (small),https://msu.io/marketplace/images/neso.png
+vonbon-chaos,Purified Chaos Yggdrasil Energy,https://api-static.msu.io/itemimages/icon/4310396.png
+vonbon-chaos,Red Florin,https://api-static.msu.io/itemimages/icon/4310403.png
+vonbon-chaos,Gold Florin,https://api-static.msu.io/itemimages/icon/4310404.png
+vonbon-chaos,Chaos Von Bon Helmet,https://api-static.msu.io/itemimages/icon/1003720.png
+vonbon-chaos,Eagle Eye Warrior Armor,https://api-static.msu.io/itemimages/icon/1042254.png
+vonbon-chaos,Eagle Eye Dunwitch Robe,https://api-static.msu.io/itemimages/icon/1042255.png
+vonbon-chaos,Eagle Eye Ranger Cowl,https://api-static.msu.io/itemimages/icon/1042256.png
+vonbon-chaos,Eagle Eye Assassin Shirt,https://api-static.msu.io/itemimages/icon/1042257.png
+vonbon-chaos,Eagle Eye Wanderer Coat,https://api-static.msu.io/itemimages/icon/1042258.png
+vonbon-chaos,Rosalia's Rose,https://api-static.msu.io/itemimages/icon/1001099.png
+vonbon-chaos,Lady Rosalia,https://api-static.msu.io/itemimages/icon/1051411.png
+vonbon-chaos,Pink Antique Parasol,https://api-static.msu.io/itemimages/icon/1702519.png
+vonbon-chaos,Von Bon's Fury Chair,https://api-static.msu.io/itemimages/icon/3010675.png
+vonbon-chaos,neso (big),https://msu.io/marketplace/images/neso.png
+vonbon-chaos,neso (small),https://msu.io/marketplace/images/neso.png
+crimsonqueen-chaos,Purified Chaos Yggdrasil Energy,https://api-static.msu.io/itemimages/icon/4310396.png
+crimsonqueen-chaos,Red Florin,https://api-static.msu.io/itemimages/icon/4310403.png
+crimsonqueen-chaos,Gold Florin,https://api-static.msu.io/itemimages/icon/4310404.png
+crimsonqueen-chaos,Chaos Queen's Tiara,https://api-static.msu.io/itemimages/icon/1003721.png
+crimsonqueen-chaos,Royal Warrior Helm,https://api-static.msu.io/itemimages/icon/1003797.png
+crimsonqueen-chaos,Royal Dunwitch Hat,https://api-static.msu.io/itemimages/icon/1003798.png
+crimsonqueen-chaos,Royal Ranger Beret,https://api-static.msu.io/itemimages/icon/1003799.png
+crimsonqueen-chaos,Royal Assassin Hood,https://api-static.msu.io/itemimages/icon/1003800.png
+crimsonqueen-chaos,Royal Wanderer Hat,https://api-static.msu.io/itemimages/icon/1003801.png
+crimsonqueen-chaos,Odile Tiara,https://api-static.msu.io/itemimages/icon/1003952.png
+crimsonqueen-chaos,Odile Tutu,https://api-static.msu.io/itemimages/icon/1051375.png
+crimsonqueen-chaos,Odile Ballet Slippers,https://api-static.msu.io/itemimages/icon/1072858.png
+crimsonqueen-chaos,Crimson Queen's Throne,https://api-static.msu.io/itemimages/icon/3010514.png
+crimsonqueen-chaos,neso (big),https://msu.io/marketplace/images/neso.png
+crimsonqueen-chaos,neso (small),https://msu.io/marketplace/images/neso.png
+vellum-chaos,Purified Chaos Yggdrasil Energy,https://api-static.msu.io/itemimages/icon/4310396.png
+vellum-chaos,Red Florin,https://api-static.msu.io/itemimages/icon/4310403.png
+vellum-chaos,Gold Florin,https://api-static.msu.io/itemimages/icon/4310404.png
+vellum-chaos,Chaos Vellum's Helm,https://api-static.msu.io/itemimages/icon/1003722.png
+vellum-chaos,Fafnir Mistilteinn,https://api-static.msu.io/itemimages/icon/1302275.png
+vellum-chaos,Fafnir Twin Cleaver,https://api-static.msu.io/itemimages/icon/1312153.png
+vellum-chaos,Fafnir Guardian Hammer,https://api-static.msu.io/itemimages/icon/1322203.png
+vellum-chaos,Fafnir Damascus,https://api-static.msu.io/itemimages/icon/1332225.png
+vellum-chaos,Fafnir Mana Taker,https://api-static.msu.io/itemimages/icon/1372177.png
+vellum-chaos,Fafnir Mana Crown,https://api-static.msu.io/itemimages/icon/1382208.png
+vellum-chaos,Fafnir Penitent Tears,https://api-static.msu.io/itemimages/icon/1402196.png
+vellum-chaos,Fafnir Battle Cleaver,https://api-static.msu.io/itemimages/icon/1412135.png
+vellum-chaos,Fafnir Lightning Striker,https://api-static.msu.io/itemimages/icon/1422140.png
+vellum-chaos,Fafnir Brionak,https://api-static.msu.io/itemimages/icon/1432167.png
+vellum-chaos,Fafnir Moon Glaive,https://api-static.msu.io/itemimages/icon/1442223.png
+vellum-chaos,Fafnir Wind Chaser,https://api-static.msu.io/itemimages/icon/1452205.png
+vellum-chaos,Fafnir Windwing Shooter,https://api-static.msu.io/itemimages/icon/1462193.png
+vellum-chaos,Fafnir Risk Holder,https://api-static.msu.io/itemimages/icon/1472214.png
+vellum-chaos,Fafnir Perry Talon,https://api-static.msu.io/itemimages/icon/1482168.png
+vellum-chaos,Fafnir Zeliska,https://api-static.msu.io/itemimages/icon/1492179.png
+vellum-chaos,Mimic Protocol Style Look,https://api-static.msu.io/itemimages/icon/1054144.png
+vellum-chaos,Blade Rifle,https://api-static.msu.io/itemimages/icon/1703482.png
+vellum-chaos,Vellum Rock Chair,https://api-static.msu.io/itemimages/icon/3010515.png
+vellum-chaos,Vellum Mount,https://api-static.msu.io/itemimages/icon/3140078.png
+vellum-chaos,neso (big),https://msu.io/marketplace/images/neso.png
+vellum-chaos,neso (small),https://msu.io/marketplace/images/neso.png
+magnus-hard,Fragment of Kaiserium,https://api-static.msu.io/itemimages/icon/4310397.png
+magnus-hard,Red Florin,https://api-static.msu.io/itemimages/icon/4310403.png
+magnus-hard,Gold Florin,https://api-static.msu.io/itemimages/icon/4310404.png
+magnus-hard,Crystal Ventus Badge,https://api-static.msu.io/itemimages/icon/1182087.png
+magnus-hard,Catty Magnus,https://api-static.msu.io/itemimages/icon/1005159.png
+magnus-hard,Starlight Guide,https://api-static.msu.io/itemimages/icon/1051796.png
+magnus-hard,Galactic Fragment,https://api-static.msu.io/itemimages/icon/1103651.png
+magnus-hard,Promised Time,https://api-static.msu.io/itemimages/icon/1703422.png
+magnus-hard,neso (big),https://msu.io/marketplace/images/neso.png
+magnus-hard,neso (small),https://msu.io/marketplace/images/neso.png
+pinkbean-chaos,Red Florin,https://api-static.msu.io/itemimages/icon/4310403.png
+pinkbean-chaos,Chaos Pink Bean Hat,https://api-static.msu.io/itemimages/icon/1003621.png
+pinkbean-chaos,Black Bean Hat,https://api-static.msu.io/itemimages/icon/1003622.png
+pinkbean-chaos,Black Bean Mark,https://api-static.msu.io/itemimages/icon/1022232.png
+pinkbean-chaos,Chaos Pink Bean Suit,https://api-static.msu.io/itemimages/icon/1052526.png
+pinkbean-chaos,Black Bean Suit,https://api-static.msu.io/itemimages/icon/1052527.png
+pinkbean-chaos,Pink Holy Cup,https://api-static.msu.io/itemimages/icon/1162025.png
+pinkbean-chaos,Pink Bean Stylish Cap,https://api-static.msu.io/itemimages/icon/1005430.png
+pinkbean-chaos,New Weird Pink Bean Face Accessory,https://api-static.msu.io/itemimages/icon/1012755.png
+pinkbean-chaos,Pink Bean Dungarees,https://api-static.msu.io/itemimages/icon/1053499.png
+pinkbean-chaos,Pink Bean Tail,https://api-static.msu.io/itemimages/icon/1103234.png
+pinkbean-chaos,neso (big),https://msu.io/marketplace/images/neso.png
+pinkbean-chaos,neso (small),https://msu.io/marketplace/images/neso.png
+cygnus-easy,Red Florin,https://api-static.msu.io/itemimages/icon/4310403.png
+cygnus-easy,Lionheart Battle Helm,https://api-static.msu.io/itemimages/icon/1003172.png
+cygnus-easy,Dragon Tail Mage Sallet,https://api-static.msu.io/itemimages/icon/1003173.png
+cygnus-easy,Falcon Wing Sentinel Cap,https://api-static.msu.io/itemimages/icon/1003174.png
+cygnus-easy,Raven Horn Chaser Hat,https://api-static.msu.io/itemimages/icon/1003175.png
+cygnus-easy,Shark Tooth Skipper Hat,https://api-static.msu.io/itemimages/icon/1003176.png
+cygnus-easy,Lionheart Battle Mail,https://api-static.msu.io/itemimages/icon/1052314.png
+cygnus-easy,Dragon Tail Mage Robe,https://api-static.msu.io/itemimages/icon/1052315.png
+cygnus-easy,Falcon Wing Sentinel Suit,https://api-static.msu.io/itemimages/icon/1052316.png
+cygnus-easy,Raven Horn Chaser Armor,https://api-static.msu.io/itemimages/icon/1052317.png
+cygnus-easy,Shark Tooth Skipper Coat,https://api-static.msu.io/itemimages/icon/1052318.png
+cygnus-easy,Lionheart Battle Boots,https://api-static.msu.io/itemimages/icon/1072485.png
+cygnus-easy,Dragon Tail Mage Shoes,https://api-static.msu.io/itemimages/icon/1072486.png
+cygnus-easy,Falcon Wing Sentinel Boots,https://api-static.msu.io/itemimages/icon/1072487.png
+cygnus-easy,Raven Horn Chaser Boots,https://api-static.msu.io/itemimages/icon/1072488.png
+cygnus-easy,Shark Tooth Skipper Boots,https://api-static.msu.io/itemimages/icon/1072489.png
+cygnus-easy,Lionheart Battle Bracers,https://api-static.msu.io/itemimages/icon/1082295.png
+cygnus-easy,Dragon Tail Mage Gloves,https://api-static.msu.io/itemimages/icon/1082296.png
+cygnus-easy,Falcon Wing Sentinel Gloves,https://api-static.msu.io/itemimages/icon/1082297.png
+cygnus-easy,Raven Horn Chaser Gloves,https://api-static.msu.io/itemimages/icon/1082298.png
+cygnus-easy,Shark Tooth Skipper Gloves,https://api-static.msu.io/itemimages/icon/1082299.png
+cygnus-easy,Lionheart Battle Cape,https://api-static.msu.io/itemimages/icon/1102275.png
+cygnus-easy,Dragon Tail Mage Cape,https://api-static.msu.io/itemimages/icon/1102276.png
+cygnus-easy,Falcon Wing Sentinel Cape,https://api-static.msu.io/itemimages/icon/1102277.png
+cygnus-easy,Raven Horn Chaser Cape,https://api-static.msu.io/itemimages/icon/1102278.png
+cygnus-easy,Shark Tooth Skipper Cape,https://api-static.msu.io/itemimages/icon/1102279.png
+cygnus-easy,Lionheart Cutlass,https://api-static.msu.io/itemimages/icon/1302152.png
+cygnus-easy,Lionheart Champion Axe,https://api-static.msu.io/itemimages/icon/1312065.png
+cygnus-easy,Lionheart Battle Hammer,https://api-static.msu.io/itemimages/icon/1322096.png
+cygnus-easy,Raven Horn Baselard,https://api-static.msu.io/itemimages/icon/1332130.png
+cygnus-easy,Dragon Tail Arc Wand,https://api-static.msu.io/itemimages/icon/1372084.png
+cygnus-easy,Dragon Tail War Staff,https://api-static.msu.io/itemimages/icon/1382104.png
+cygnus-easy,Lionheart Battle Scimitar,https://api-static.msu.io/itemimages/icon/1402095.png
+cygnus-easy,Lionheart Battle Axe,https://api-static.msu.io/itemimages/icon/1412065.png
+cygnus-easy,Lionheart Blast Maul,https://api-static.msu.io/itemimages/icon/1422066.png
+cygnus-easy,Lionheart Fuscina,https://api-static.msu.io/itemimages/icon/1432086.png
+cygnus-easy,Lionheart Partisan,https://api-static.msu.io/itemimages/icon/1442116.png
+cygnus-easy,Falcon Wing Composite Bow,https://api-static.msu.io/itemimages/icon/1452111.png
+cygnus-easy,Falcon Wing Heavy Crossbow,https://api-static.msu.io/itemimages/icon/1462099.png
+cygnus-easy,Raven Horn Metal Fist,https://api-static.msu.io/itemimages/icon/1472122.png
+cygnus-easy,Shark Tooth Wild Talon,https://api-static.msu.io/itemimages/icon/1482084.png
+cygnus-easy,Shark Tooth Sharpshooter,https://api-static.msu.io/itemimages/icon/1492085.png
+cygnus-easy,Star of Ereve,https://api-static.msu.io/itemimages/icon/1001075.png
+cygnus-easy,Cygnus Sandals,https://api-static.msu.io/itemimages/icon/1071037.png
+cygnus-easy,Cygnus Face,https://api-static.msu.io/itemimages/icon/1790147.png
+cygnus-easy,Cygnus Hair,https://api-static.msu.io/itemimages/icon/1791302.png
+cygnus-easy,neso (big),https://msu.io/marketplace/images/neso.png
+cygnus-easy,neso (small),https://msu.io/marketplace/images/neso.png
+cygnus-normal,Red Florin,https://api-static.msu.io/itemimages/icon/4310403.png
+cygnus-normal,Lionheart Battle Helm,https://api-static.msu.io/itemimages/icon/1003172.png
+cygnus-normal,Dragon Tail Mage Sallet,https://api-static.msu.io/itemimages/icon/1003173.png
+cygnus-normal,Falcon Wing Sentinel Cap,https://api-static.msu.io/itemimages/icon/1003174.png
+cygnus-normal,Raven Horn Chaser Hat,https://api-static.msu.io/itemimages/icon/1003175.png
+cygnus-normal,Shark Tooth Skipper Hat,https://api-static.msu.io/itemimages/icon/1003176.png
+cygnus-normal,Lionheart Battle Mail,https://api-static.msu.io/itemimages/icon/1052314.png
+cygnus-normal,Dragon Tail Mage Robe,https://api-static.msu.io/itemimages/icon/1052315.png
+cygnus-normal,Falcon Wing Sentinel Suit,https://api-static.msu.io/itemimages/icon/1052316.png
+cygnus-normal,Raven Horn Chaser Armor,https://api-static.msu.io/itemimages/icon/1052317.png
+cygnus-normal,Shark Tooth Skipper Coat,https://api-static.msu.io/itemimages/icon/1052318.png
+cygnus-normal,Lionheart Battle Boots,https://api-static.msu.io/itemimages/icon/1072485.png
+cygnus-normal,Dragon Tail Mage Shoes,https://api-static.msu.io/itemimages/icon/1072486.png
+cygnus-normal,Falcon Wing Sentinel Boots,https://api-static.msu.io/itemimages/icon/1072487.png
+cygnus-normal,Raven Horn Chaser Boots,https://api-static.msu.io/itemimages/icon/1072488.png
+cygnus-normal,Shark Tooth Skipper Boots,https://api-static.msu.io/itemimages/icon/1072489.png
+cygnus-normal,Lionheart Battle Bracers,https://api-static.msu.io/itemimages/icon/1082295.png
+cygnus-normal,Dragon Tail Mage Gloves,https://api-static.msu.io/itemimages/icon/1082296.png
+cygnus-normal,Falcon Wing Sentinel Gloves,https://api-static.msu.io/itemimages/icon/1082297.png
+cygnus-normal,Raven Horn Chaser Gloves,https://api-static.msu.io/itemimages/icon/1082298.png
+cygnus-normal,Shark Tooth Skipper Gloves,https://api-static.msu.io/itemimages/icon/1082299.png
+cygnus-normal,Lionheart Battle Cape,https://api-static.msu.io/itemimages/icon/1102275.png
+cygnus-normal,Dragon Tail Mage Cape,https://api-static.msu.io/itemimages/icon/1102276.png
+cygnus-normal,Falcon Wing Sentinel Cape,https://api-static.msu.io/itemimages/icon/1102277.png
+cygnus-normal,Raven Horn Chaser Cape,https://api-static.msu.io/itemimages/icon/1102278.png
+cygnus-normal,Shark Tooth Skipper Cape,https://api-static.msu.io/itemimages/icon/1102279.png
+cygnus-normal,Lionheart Battle Shoulder,https://api-static.msu.io/itemimages/icon/1152108.png
+cygnus-normal,Dragon Tail Mage Shoulder,https://api-static.msu.io/itemimages/icon/1152110.png
+cygnus-normal,Falcon Wing Sentinel Shoulder,https://api-static.msu.io/itemimages/icon/1152111.png
+cygnus-normal,Raven Horn Chaser Shoulder,https://api-static.msu.io/itemimages/icon/1152112.png
+cygnus-normal,Shark Tooth Skipper Shoulder,https://api-static.msu.io/itemimages/icon/1152113.png
+cygnus-normal,Lionheart Cutlass,https://api-static.msu.io/itemimages/icon/1302152.png
+cygnus-normal,Lionheart Champion Axe,https://api-static.msu.io/itemimages/icon/1312065.png
+cygnus-normal,Lionheart Battle Hammer,https://api-static.msu.io/itemimages/icon/1322096.png
+cygnus-normal,Raven Horn Baselard,https://api-static.msu.io/itemimages/icon/1332130.png
+cygnus-normal,Dragon Tail Arc Wand,https://api-static.msu.io/itemimages/icon/1372084.png
+cygnus-normal,Dragon Tail War Staff,https://api-static.msu.io/itemimages/icon/1382104.png
+cygnus-normal,Lionheart Battle Scimitar,https://api-static.msu.io/itemimages/icon/1402095.png
+cygnus-normal,Lionheart Battle Axe,https://api-static.msu.io/itemimages/icon/1412065.png
+cygnus-normal,Lionheart Blast Maul,https://api-static.msu.io/itemimages/icon/1422066.png
+cygnus-normal,Lionheart Fuscina,https://api-static.msu.io/itemimages/icon/1432086.png
+cygnus-normal,Lionheart Partisan,https://api-static.msu.io/itemimages/icon/1442116.png
+cygnus-normal,Falcon Wing Composite Bow,https://api-static.msu.io/itemimages/icon/1452111.png
+cygnus-normal,Falcon Wing Heavy Crossbow,https://api-static.msu.io/itemimages/icon/1462099.png
+cygnus-normal,Raven Horn Metal Fist,https://api-static.msu.io/itemimages/icon/1472122.png
+cygnus-normal,Shark Tooth Wild Talon,https://api-static.msu.io/itemimages/icon/1482084.png
+cygnus-normal,Shark Tooth Sharpshooter,https://api-static.msu.io/itemimages/icon/1492085.png
+cygnus-normal,Cygnus Dress,https://api-static.msu.io/itemimages/icon/1051277.png
+cygnus-normal,Angelic Emerald,https://api-static.msu.io/itemimages/icon/1102356.png
+cygnus-normal,Cygnus's Guard,https://api-static.msu.io/itemimages/icon/1702757.png
+cygnus-normal,Cygnus Garden Chair,https://api-static.msu.io/itemimages/icon/3018788.png
+cygnus-normal,neso (big),https://msu.io/marketplace/images/neso.png
+cygnus-normal,neso (small),https://msu.io/marketplace/images/neso.png
+papulatus-chaos,Red Florin,https://api-static.msu.io/itemimages/icon/4310403.png
+papulatus-chaos,Gold Florin,https://api-static.msu.io/itemimages/icon/4310404.png
+papulatus-chaos,Papulatus Mark,https://api-static.msu.io/itemimages/icon/1022277.png
+papulatus-chaos,Chicky Pile,https://api-static.msu.io/itemimages/icon/1102574.png
+papulatus-chaos,Baby Chick Chat Ring,https://api-static.msu.io/itemimages/icon/1115063.png
+papulatus-chaos,Baby Chick Label Ring,https://api-static.msu.io/itemimages/icon/1115152.png
+papulatus-chaos,Papulatus Clock Chair,https://api-static.msu.io/itemimages/icon/3016206.png
+papulatus-chaos,neso (big),https://msu.io/marketplace/images/neso.png
+papulatus-chaos,neso (small),https://msu.io/marketplace/images/neso.png
+lotus-normal,AbsoLab Coin,https://api-static.msu.io/itemimages/icon/4310156.png
+lotus-normal,Red Florin,https://api-static.msu.io/itemimages/icon/4310403.png
+lotus-normal,Gold Florin,https://api-static.msu.io/itemimages/icon/4310404.png
+lotus-normal,AbsoLab Knight Helm,https://api-static.msu.io/itemimages/icon/1004422.png
+lotus-normal,AbsoLab Mage Crown,https://api-static.msu.io/itemimages/icon/1004423.png
+lotus-normal,AbsoLab Archer Hood,https://api-static.msu.io/itemimages/icon/1004424.png
+lotus-normal,AbsoLab Bandit Cap,https://api-static.msu.io/itemimages/icon/1004425.png
+lotus-normal,AbsoLab Pirate Fedora,https://api-static.msu.io/itemimages/icon/1004426.png
+lotus-normal,AbsoLab Knight Shoes,https://api-static.msu.io/itemimages/icon/1073030.png
+lotus-normal,AbsoLab Mage Shoes,https://api-static.msu.io/itemimages/icon/1073032.png
+lotus-normal,AbsoLab Archer Shoes,https://api-static.msu.io/itemimages/icon/1073033.png
+lotus-normal,AbsoLab Bandit Shoes,https://api-static.msu.io/itemimages/icon/1073034.png
+lotus-normal,AbsoLab Pirate Shoes,https://api-static.msu.io/itemimages/icon/1073035.png
+lotus-normal,AbsoLab Knight Gloves,https://api-static.msu.io/itemimages/icon/1082636.png
+lotus-normal,AbsoLab Mage Gloves,https://api-static.msu.io/itemimages/icon/1082637.png
+lotus-normal,AbsoLab Archer Gloves,https://api-static.msu.io/itemimages/icon/1082638.png
+lotus-normal,AbsoLab Bandit Gloves,https://api-static.msu.io/itemimages/icon/1082639.png
+lotus-normal,AbsoLab Pirate Gloves,https://api-static.msu.io/itemimages/icon/1082640.png
+lotus-normal,Black Wing Master's Hat,https://api-static.msu.io/itemimages/icon/1003763.png
+lotus-normal,Commander Lotus Mask,https://api-static.msu.io/itemimages/icon/1004140.png
+lotus-normal,Lotus's Black Wings Uniform,https://api-static.msu.io/itemimages/icon/1052576.png
+lotus-normal,Lotus's Black Wing Shoes,https://api-static.msu.io/itemimages/icon/1072783.png
+lotus-normal,neso (big),https://msu.io/marketplace/images/neso.png
+lotus-normal,neso (small),https://msu.io/marketplace/images/neso.png
+damien-normal,Stigma Coin,https://api-static.msu.io/itemimages/icon/4310199.png
+damien-normal,Red Florin,https://api-static.msu.io/itemimages/icon/4310403.png
+damien-normal,Gold Florin,https://api-static.msu.io/itemimages/icon/4310404.png
+damien-normal,AbsoLab Knight Suit,https://api-static.msu.io/itemimages/icon/1052882.png
+damien-normal,AbsoLab Mage Suit,https://api-static.msu.io/itemimages/icon/1052887.png
+damien-normal,AbsoLab Archer Suit,https://api-static.msu.io/itemimages/icon/1052888.png
+damien-normal,AbsoLab Bandit Suit,https://api-static.msu.io/itemimages/icon/1052889.png
+damien-normal,AbsoLab Pirate Suit,https://api-static.msu.io/itemimages/icon/1052890.png
+damien-normal,AbsoLab Knight Cape,https://api-static.msu.io/itemimages/icon/1102775.png
+damien-normal,AbsoLab Mage Cape,https://api-static.msu.io/itemimages/icon/1102794.png
+damien-normal,AbsoLab Archer Cape,https://api-static.msu.io/itemimages/icon/1102795.png
+damien-normal,AbsoLab Bandit Cape,https://api-static.msu.io/itemimages/icon/1102796.png
+damien-normal,AbsoLab Pirate Cape,https://api-static.msu.io/itemimages/icon/1102797.png
+damien-normal,AbsoLab Knight Shoulder,https://api-static.msu.io/itemimages/icon/1152174.png
+damien-normal,AbsoLab Mage Shoulder,https://api-static.msu.io/itemimages/icon/1152176.png
+damien-normal,AbsoLab Archer Shoulder,https://api-static.msu.io/itemimages/icon/1152177.png
+damien-normal,AbsoLab Thief Shoulder,https://api-static.msu.io/itemimages/icon/1152178.png
+damien-normal,AbsoLab Pirate Shoulder,https://api-static.msu.io/itemimages/icon/1152179.png
+damien-normal,Commander Damien Mask,https://api-static.msu.io/itemimages/icon/1004141.png
+damien-normal,Damien's Eyepatch,https://api-static.msu.io/itemimages/icon/1022244.png
+damien-normal,Heroes Damien Chat Ring,https://api-static.msu.io/itemimages/icon/1115019.png
+damien-normal,Heroes Damien Label Ring,https://api-static.msu.io/itemimages/icon/1115108.png
+damien-normal,neso (big),https://msu.io/marketplace/images/neso.png
+damien-normal,neso (small),https://msu.io/marketplace/images/neso.png

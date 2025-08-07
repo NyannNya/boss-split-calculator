@@ -1,420 +1,369 @@
-const data = {
-    members: [],
-    sales: [], // 銷售項目，每個項目包含 bossName, item, owner, price, applyFee
-    distribution: {
-        method: "average",
-        fee: 0.05
-    },
-    // 新增一個屬性來追蹤每個 BOSS 區塊的 ID，以便在加載時正確匹配
-    bossGroupCounter: 0
-};
+const allocations = {}; // 用於儲存每個 BOSS 的分配設定
+let bossItemsData = []; // 將從 CSV 加載的 BOSS 道具數據
 
 // DOM 元素
-const numMembersInput = document.getElementById('num-members');
-const generateMembersButton = document.getElementById('generate-members');
-const membersContainer = document.getElementById('members-container');
+const bossGroupsContainer = document.getElementById('boss-groups-container');
 const addBossGroupButton = document.getElementById('add-boss-group');
-const bossSalesContainer = document.getElementById('boss-sales-container');
-const averageDistributionRadio = document.getElementById('average-distribution');
-const customDistributionRadio = document.getElementById('custom-distribution');
-const customShareContainer = document.getElementById('custom-share-container');
-const feeInput = document.getElementById('fee');
 const calculateButton = document.getElementById('calculate-button');
 const resultTableBody = document.querySelector('#result-table tbody');
 const shareLinkTextarea = document.getElementById('share-link');
-const copyResultButton = document.getElementById('copy-result');
 const copyShareLinkButton = document.getElementById('copy-share-link');
 
-// 函數：生成成員輸入欄位
-function generateMemberFields() {
-    const numMembers = parseInt(numMembersInput.value);
-    membersContainer.innerHTML = '';
-    data.members = [];
-    for (let i = 0; i < numMembers; i++) {
-        const memberItem = document.createElement('div');
-        memberItem.classList.add('member-item');
-        memberItem.innerHTML = `
-            <div class="form-group">
-                <label>成員名稱:</label>
-                <input type="text" class="member-name" value="成員${i + 1}">
-            </div>
-            <div class="form-group">
-                <label>錢包地址:</label>
-                <input type="text" class="member-address">
-            </div>
-        `;
-        membersContainer.appendChild(memberItem);
-        data.members.push({ name: `成員${i + 1}`, address: '', share: 0 });
+// 函數：從 CSV 檔案載入 BOSS 道具數據
+async function loadBossItemsData() {
+    try {
+        const response = await fetch('boss_items.csv');
+        const text = await response.text();
+        bossItemsData = parseCsv(text);
+        console.log('BOSS 道具數據已載入:', bossItemsData);
+    } catch (error) {
+        console.error('載入 boss_items.csv 失敗:', error);
     }
-    updateCustomShareFields();
-    updateMemberOwnerSelects(); // 新增：更新所有道具獲得者下拉選單
+}
+
+// 函數：解析 CSV 數據
+function parseCsv(text) {
+    const lines = text.trim().split('\n');
+    const headers = lines[0].split(',');
+    return lines.slice(1).map(line => {
+        const values = line.split(',');
+        let obj = {};
+        headers.forEach((header, i) => {
+            obj[header.trim()] = values[i].trim();
+        });
+        return obj;
+    });
+}
+
+// 函數：生成 BOSS 下拉選單選項
+function generateBossOptions() {
+    let options = '<option value="">請選擇 BOSS</option>';
+    const uniqueBossNames = [...new Set(bossItemsData.map(item => item.boss_name))];
+    uniqueBossNames.forEach(bossName => {
+        options += `<option value="${bossName}">${bossName}</option>`;
+    });
+    return options;
+}
+
+// 函數：生成道具卡片
+function generateItemCard(bossName, item, isChecked = false) {
+    const itemCardDiv = document.createElement('div');
+    itemCardDiv.classList.add('item-card');
+    itemCardDiv.innerHTML = `
+        <img src="${item.image_url}" alt="${item.item_name}">
+        <p>${item.item_name}</p>
+        <input type="checkbox" class="item-checkbox" data-item-name="${item.item_name}" ${isChecked ? 'checked' : ''}>
+    `;
+    return itemCardDiv;
 }
 
 // 函數：更新自訂分配比欄位
-function updateCustomShareFields() {
+function updateCustomShareFields(bossGroupDiv, participants, currentAllocations = {}) {
+    const customShareContainer = bossGroupDiv.querySelector('.custom-share-container');
     customShareContainer.innerHTML = '';
-    if (customDistributionRadio.checked) {
-        data.members.forEach((member, index) => {
+    if (bossGroupDiv.querySelector('.distribution-method[value="custom"]').checked) {
+        participants.forEach(participant => {
             const shareGroup = document.createElement('div');
-            shareGroup.classList.add('form-group');
+            shareGroup.classList.add('form-group', 'share-input-group');
             shareGroup.innerHTML = `
-                <label>${member.name} 分配比 (%):</label>
-                <input type="number" class="member-share" data-index="${index}" min="0" value="${(member.share * 100).toFixed(2)}">
+                <label>${participant} 比例 (%):</label>
+                <input type="number" class="participant-share" data-participant="${participant}" min="0" value="${(currentAllocations[participant] * 100 || 0).toFixed(2)}">
             `;
             customShareContainer.appendChild(shareGroup);
         });
     }
 }
 
-// 函數：生成成員下拉選單選項
-function generateMemberOptions() {
-    let options = '<option value="">請選擇</option>';
-    data.members.forEach(member => {
-        options += `<option value="${member.name}">${member.name}</option>`;
-    });
-    return options;
-}
-
-// 函數：更新所有道具獲得者下拉選單
-function updateMemberOwnerSelects() {
-    document.querySelectorAll('.item-owner').forEach(select => {
-        const currentOwner = select.value;
-        select.innerHTML = generateMemberOptions();
-        select.value = currentOwner; // 嘗試恢復選定的值
-    });
-}
-
-// 函數：新增銷售項目到指定的 BOSS 區塊
-function addSaleItemToBoss(salesItemsContainer, itemData = {}) {
-    const saleItemDiv = document.createElement('div');
-    saleItemDiv.classList.add('sale-item');
-    const itemId = `apply-fee-${Date.now()}-${Math.floor(Math.random() * 1000)}`; // 確保 ID 唯一
-    saleItemDiv.innerHTML = `
-        <div class="form-group">
-            <label>道具名稱:</label>
-            <input type="text" class="item-name" value="${itemData.item || ''}">
-        </div>
-        <div class="form-group">
-            <label>道具獲得者:</label>
-            <select class="item-owner">
-                ${generateMemberOptions()}
-            </select>
-        </div>
-        <div class="form-group">
-            <label>售價:</label>
-            <input type="number" class="item-price" min="0" value="${itemData.price || 0}">
-        </div>
-        <div class="form-group checkbox-group">
-            <input type="checkbox" class="apply-fee" id="${itemId}" ${itemData.applyFee === false ? '' : 'checked'}>
-            <label for="${itemId}">扣手續費</label>
-        </div>
-        <button class="remove-sale-item">移除</button>
-    `;
-    salesItemsContainer.appendChild(saleItemDiv);
-
-    // 設定道具獲得者
-    if (itemData.owner) {
-        saleItemDiv.querySelector('.item-owner').value = itemData.owner;
-    }
-
-    saleItemDiv.querySelector('.remove-sale-item').addEventListener('click', function() {
-        saleItemDiv.remove();
-        updateDataFromInputs();
-    });
-}
-
-// 函數：新增 BOSS 區塊
-function addBossGroup(bossData = {}) {
+// 函數：新增 BOSS 分配區塊
+function addBossGroup(bossAllocationData = {}) {
     const bossGroupDiv = document.createElement('div');
     bossGroupDiv.classList.add('boss-group');
-    const currentBossId = data.bossGroupCounter++; // 為每個 BOSS 區塊分配一個唯一 ID
-    bossGroupDiv.dataset.bossId = currentBossId; // 將 ID 存儲在 data 屬性中
+    const bossGroupId = `boss-group-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+    bossGroupDiv.dataset.bossGroupId = bossGroupId;
 
     bossGroupDiv.innerHTML = `
-        <div class="form-group boss-name-row">
-            <label>王的名稱:</label>
-            <input type="text" class="boss-name-group" value="${bossData.bossName || `BOSS ${currentBossId + 1}`}">
-            <button class="remove-boss-group">移除此BOSS</button>
+        <div class="boss-header">
+            <h3 class="boss-name-display">${bossAllocationData.bossName || '選擇 BOSS'}</h3>
+            <select class="boss-name-select">
+                ${generateBossOptions()}
+            </select>
+            <button class="remove-boss-group">移除此 BOSS</button>
         </div>
-        <div class="sales-items-container">
-            <!-- 銷售項目將在此處動態生成 -->
+
+        <div class="allocation-settings">
+            <h4>分配對象與比例</h4>
+            <div class="form-group">
+                <label>參與人員 (逗號分隔):</label>
+                <input type="text" class="participants-input" placeholder="例如: PlayerA, PlayerB" value="${(bossAllocationData.participants || []).join(', ')}">
+            </div>
+            <div class="form-group">
+                <label>分配方式:</label>
+                <input type="radio" class="distribution-method" name="distribution-method-${bossGroupId}" value="average" ${bossAllocationData.distributionMethod === 'custom' ? '' : 'checked'}>
+                <label>平均分配</label>
+                <input type="radio" class="distribution-method" name="distribution-method-${bossGroupId}" value="custom" ${bossAllocationData.distributionMethod === 'custom' ? 'checked' : ''}>
+                <label>自訂分配比</label>
+            </div>
+            <div class="custom-share-container" style="${bossAllocationData.distributionMethod === 'custom' ? 'display: block;' : 'display: none;'}">
+                <!-- 自訂分配比輸入欄位將在此處動態生成 -->
+            </div>
+            <div class="form-group">
+                <label>銷售手續費 (%):</label>
+                <input type="number" class="fee-input" min="0" max="100" value="${bossAllocationData.fee !== undefined ? bossAllocationData.fee * 100 : 5}">
+            </div>
         </div>
-        <button class="add-sale-item-to-boss">新增銷售項目</button>
+
+        <div class="boss-items-container">
+            <h4>BOSS 掉落道具</h4>
+            <div class="item-list">
+                <!-- 道具列表將在此處動態生成 -->
+            </div>
+        </div>
     `;
-    bossSalesContainer.appendChild(bossGroupDiv);
+    bossGroupsContainer.appendChild(bossGroupDiv);
 
-    const salesItemsContainer = bossGroupDiv.querySelector('.sales-items-container');
+    const bossNameSelect = bossGroupDiv.querySelector('.boss-name-select');
+    const bossNameDisplay = bossGroupDiv.querySelector('.boss-name-display');
+    const participantsInput = bossGroupDiv.querySelector('.participants-input');
+    const distributionMethodRadios = bossGroupDiv.querySelectorAll(`.distribution-method[name="distribution-method-${bossGroupId}"]`);
+    const customShareContainer = bossGroupDiv.querySelector('.custom-share-container');
+    const itemListContainer = bossGroupDiv.querySelector('.item-list');
 
-    // 如果是從 URL 加載數據，則填充銷售項目
-    if (bossData.items && bossData.items.length > 0) {
-        bossData.items.forEach(item => {
-            addSaleItemToBoss(salesItemsContainer, item);
-        });
-    } else {
-        addSaleItemToBoss(salesItemsContainer); // 為新的 BOSS 區塊添加一個預設銷售項目
+    // 填充 BOSS 名稱
+    if (bossAllocationData.bossName) {
+        bossNameSelect.value = bossAllocationData.bossName;
+        bossNameDisplay.textContent = bossAllocationData.bossName;
+        renderBossItems(bossGroupDiv, bossAllocationData.bossName, bossAllocationData.selectedItems || []);
     }
+
+    // 更新自訂分配比欄位
+    if (bossAllocationData.distributionMethod === 'custom' && bossAllocationData.participants) {
+        updateCustomShareFields(bossGroupDiv, bossAllocationData.participants, bossAllocationData.allocations);
+    }
+
+    // 事件監聽器
+    bossNameSelect.addEventListener('change', function() {
+        const selectedBossName = this.value;
+        bossNameDisplay.textContent = selectedBossName || '選擇 BOSS';
+        renderBossItems(bossGroupDiv, selectedBossName, allocations[bossGroupId]?.selectedItems || []);
+        updateAllocationsData();
+    });
+
+    participantsInput.addEventListener('input', function() {
+        const participants = this.value.split(',').map(p => p.trim()).filter(p => p !== '');
+        updateCustomShareFields(bossGroupDiv, participants, allocations[bossGroupId]?.allocations || {});
+        updateAllocationsData();
+    });
+
+    distributionMethodRadios.forEach(radio => {
+        radio.addEventListener('change', function() {
+            if (this.value === 'custom') {
+                customShareContainer.style.display = 'block';
+                const participants = participantsInput.value.split(',').map(p => p.trim()).filter(p => p !== '');
+                updateCustomShareFields(bossGroupDiv, participants, allocations[bossGroupId]?.allocations || {});
+            } else {
+                customShareContainer.style.display = 'none';
+            }
+            updateAllocationsData();
+        });
+    });
+
+    customShareContainer.addEventListener('input', function() {
+        updateAllocationsData();
+    });
+
+    bossGroupDiv.querySelector('.fee-input').addEventListener('input', function() {
+        updateAllocationsData();
+    });
 
     bossGroupDiv.querySelector('.remove-boss-group').addEventListener('click', function() {
+        delete allocations[bossGroupId];
         bossGroupDiv.remove();
-        updateDataFromInputs();
+        updateAllocationsData();
     });
 
-    bossGroupDiv.querySelector('.add-sale-item-to-boss').addEventListener('click', function() {
-        addSaleItemToBoss(salesItemsContainer);
-        updateDataFromInputs();
-    });
+    // 初始化時將數據存入 allocations
+    updateAllocationsData();
 }
 
-// 函數：格式化數字為千分位
-function formatNumber(num) {
-    return num.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-}
+// 函數：渲染 BOSS 掉落道具列表
+function renderBossItems(bossGroupDiv, bossName, selectedItems = []) {
+    const itemListContainer = bossGroupDiv.querySelector('.item-list');
+    itemListContainer.innerHTML = '';
+    const itemsForBoss = bossItemsData.filter(item => item.boss_name === bossName);
 
-// 函數：從輸入欄位讀取數據並更新 data 物件
-function updateDataFromInputs() {
-    // 更新成員資訊
-    data.members = [];
-    document.querySelectorAll('#members-container .member-item').forEach(item => {
-        const name = item.querySelector('.member-name').value;
-        const address = item.querySelector('.member-address').value;
-        data.members.push({ name, address, share: 0 }); // share 暫時設為 0，後面會更新
-    });
+    itemsForBoss.forEach(item => {
+        const isChecked = selectedItems.includes(item.item_name);
+        const itemCard = generateItemCard(bossName, item, isChecked);
+        itemListContainer.appendChild(itemCard);
 
-    // 更新銷售資訊
-    data.sales = [];
-    document.querySelectorAll('#boss-sales-container .boss-group').forEach(bossGroup => {
-        const bossName = bossGroup.querySelector('.boss-name-group').value;
-        bossGroup.querySelectorAll('.sale-item').forEach(item => {
-            const itemName = item.querySelector('.item-name').value;
-            const itemOwner = item.querySelector('.item-owner').value;
-            const itemPrice = parseFloat(item.querySelector('.item-price').value) || 0;
-            const applyFee = item.querySelector('.apply-fee').checked;
-            data.sales.push({ bossName, item: itemName, owner: itemOwner, price: itemPrice, applyFee: applyFee });
+        itemCard.querySelector('.item-checkbox').addEventListener('change', function() {
+            updateAllocationsData();
         });
     });
+}
 
-    // 更新分帳設定
-    data.distribution.method = document.querySelector('input[name="distribution-method"]:checked').value;
-    data.distribution.fee = parseFloat(feeInput.value) / 100 || 0;
+// 函數：從輸入欄位讀取數據並更新 allocations 物件
+function updateAllocationsData() {
+    document.querySelectorAll('.boss-group').forEach(bossGroupDiv => {
+        const bossGroupId = bossGroupDiv.dataset.bossGroupId;
+        const bossName = bossGroupDiv.querySelector('.boss-name-select').value;
+        const participantsInput = bossGroupDiv.querySelector('.participants-input').value;
+        const participants = participantsInput.split(',').map(p => p.trim()).filter(p => p !== '');
+        const distributionMethod = bossGroupDiv.querySelector('.distribution-method:checked').value;
+        const fee = parseFloat(bossGroupDiv.querySelector('.fee-input').value) / 100 || 0;
 
-    // 更新自訂分配比
-    if (data.distribution.method === 'custom') {
-        let totalCustomShare = 0;
-        document.querySelectorAll('#custom-share-container .member-share').forEach(input => {
-            const index = parseInt(input.dataset.index);
-            const share = parseFloat(input.value) / 100 || 0;
-            if (data.members[index]) {
-                data.members[index].share = share;
+        let currentAllocations = {};
+        if (distributionMethod === 'custom') {
+            let totalCustomShare = 0;
+            bossGroupDiv.querySelectorAll('.participant-share').forEach(input => {
+                const participant = input.dataset.participant;
+                const share = parseFloat(input.value) || 0; // 這裡直接讀取百分比
+                currentAllocations[participant] = share;
                 totalCustomShare += share;
-            }
-        });
-        // 如果自訂分配比總和不為 1 (100%)，可以給出警告或自動調整
-        if (totalCustomShare > 0 && totalCustomShare !== 1) {
-            console.warn("自訂分配比總和不為 100%，將按比例調整。");
-            data.members.forEach(member => {
-                if (totalCustomShare > 0) {
-                    member.share /= totalCustomShare;
-                }
             });
-        }
-    } else {
-        // 平均分配時，重置 share
-        data.members.forEach(member => member.share = 0);
-    }
 
-    // 更新道具獲得者下拉選單
-    updateMemberOwnerSelects();
+            // 如果總和不為 100%，則按比例調整
+            if (totalCustomShare > 0 && totalCustomShare !== 100) {
+                console.warn(`BOSS ${bossName} 的自訂分配比總和不為 100%，將按比例調整。`);
+                for (const p in currentAllocations) {
+                    currentAllocations[p] /= totalCustomShare; // 轉換為小數
+                }
+            } else if (totalCustomShare === 100) {
+                for (const p in currentAllocations) {
+                    currentAllocations[p] /= 100; // 轉換為小數
+                }
+            }
+        }
+
+        const selectedItems = Array.from(bossGroupDiv.querySelectorAll('.item-checkbox:checked'))
+                                .map(checkbox => checkbox.dataset.itemName);
+
+        allocations[bossGroupId] = {
+            bossName,
+            participants,
+            distributionMethod,
+            allocations: currentAllocations,
+            fee,
+            selectedItems
+        };
+    });
+    generateShareLink();
 }
 
-// 函數：計算分帳結果
+// 函數：計算分帳結果 (簡化版，僅顯示選中的道具和分配對象)
 function calculateDistribution() {
-    updateDataFromInputs(); // 確保數據是最新的
+    updateAllocationsData(); // 確保數據是最新的
+    resultTableBody.innerHTML = '';
 
-    let totalRevenue = 0;
-    let ownerRevenues = {}; // 記錄每個道具獲得者的收入
+    let allTransactions = [];
 
-    data.members.forEach(member => {
-        ownerRevenues[member.name] = 0;
-    });
-
-    data.sales.forEach(sale => {
-        let itemNetPrice = sale.price;
-        if (sale.applyFee) {
-            itemNetPrice *= (1 - data.distribution.fee);
+    for (const bossGroupId in allocations) {
+        const bossData = allocations[bossGroupId];
+        if (!bossData.bossName || bossData.selectedItems.length === 0 || bossData.participants.length === 0) {
+            continue; // 跳過不完整的 BOSS 區塊
         }
-        totalRevenue += itemNetPrice;
 
-        // 將道具收入歸屬到獲得者
-        if (sale.owner && ownerRevenues[sale.owner] !== undefined) {
-            ownerRevenues[sale.owner] += itemNetPrice;
-        }
-    });
+        // 這裡假設每個選中的道具價值為 1，以便計算份額
+        const totalItemsValue = bossData.selectedItems.length;
+        let distributedAmounts = {};
 
-    let distributedAmounts = {};
-    let totalDistributed = 0;
-
-    if (data.distribution.method === 'average') {
-        const numMembers = data.members.length;
-        if (numMembers > 0) {
-            const amountPerMember = totalRevenue / numMembers;
-            data.members.forEach(member => {
-                distributedAmounts[member.name] = amountPerMember;
-                totalDistributed += amountPerMember;
+        if (bossData.distributionMethod === 'average') {
+            const amountPerParticipant = totalItemsValue / bossData.participants.length;
+            bossData.participants.forEach(p => {
+                distributedAmounts[p] = amountPerParticipant;
             });
-        }
-    } else if (data.distribution.method === 'custom') {
-        let totalCustomShare = 0;
-        data.members.forEach(member => totalCustomShare += member.share);
-
-        if (totalCustomShare > 0) {
-            data.members.forEach(member => {
-                distributedAmounts[member.name] = totalRevenue * (member.share / totalCustomShare);
-                totalDistributed += distributedAmounts[member.name];
+        } else { // custom
+            let totalCustomShare = 0; // 這裡的 totalCustomShare 應該是百分比的總和
+            bossData.participants.forEach(p => {
+                totalCustomShare += (bossData.allocations[p] * 100) || 0; // 轉換回百分比計算總和
             });
-        } else {
-            // 如果自訂分配比總和為 0，則平均分配
-            const numMembers = data.members.length;
-            if (numMembers > 0) {
-                const amountPerMember = totalRevenue / numMembers;
-                data.members.forEach(member => {
-                    distributedAmounts[member.name] = amountPerMember;
-                    totalDistributed += amountPerMember;
+
+            if (totalCustomShare > 0) {
+                bossData.participants.forEach(p => {
+                    // 使用儲存的小數比例來計算
+                    distributedAmounts[p] = totalItemsValue * (bossData.allocations[p] || 0);
+                });
+            } else {
+                // 如果自訂分配比總和為 0，則平均分配
+                const amountPerParticipant = totalItemsValue / bossData.participants.length;
+                bossData.participants.forEach(p => {
+                    distributedAmounts[p] = amountPerParticipant;
                 });
             }
         }
+
+        bossData.participants.forEach(p => {
+            allTransactions.push({
+                boss: bossData.bossName,
+                participant: p,
+                share: distributedAmounts[p],
+                items: bossData.selectedItems.join(', ')
+            });
+        });
     }
 
-    // 處理收到錢的人給應該收錢的人的邏輯
-    let finalAmounts = {};
-    data.members.forEach(member => {
-        finalAmounts[member.name] = (distributedAmounts[member.name] || 0) - (ownerRevenues[member.name] || 0);
-    });
-
-    // 顯示結果
-    resultTableBody.innerHTML = '';
-    data.members.forEach(member => {
-        const amount = finalAmounts[member.name] || 0;
+    if (allTransactions.length === 0) {
         const row = resultTableBody.insertRow();
-        row.insertCell().textContent = member.name;
-        row.insertCell().textContent = formatNumber(amount); // 格式化金額
-        row.insertCell().textContent = member.address;
-    });
-
-    generateShareLink();
+        const cell = row.insertCell();
+        cell.colSpan = 4;
+        cell.textContent = '沒有可計算的分配結果。';
+        cell.style.textAlign = 'center';
+    } else {
+        const table = document.getElementById('result-table');
+        table.querySelector('thead').innerHTML = `
+            <tr>
+                <th>BOSS</th>
+                <th>參與者</th>
+                <th>應得份額 (道具數量)</th>
+                <th>分配道具</th>
+            </tr>
+        `;
+        allTransactions.forEach(tx => {
+            const row = resultTableBody.insertRow();
+            row.insertCell().textContent = tx.boss;
+            row.insertCell().textContent = tx.participant;
+            row.insertCell().textContent = tx.share.toFixed(2);
+            row.insertCell().textContent = tx.items;
+        });
+    }
 }
 
 // 函數：生成分享連結
 function generateShareLink() {
-    const encodedData = btoa(JSON.stringify(data));
-    const shareUrl = `${window.location.origin}${window.location.pathname}?data=${encodedData}`;
+    const encodedData = btoa(JSON.stringify(allocations));
+    const shareUrl = `${window.location.origin}${window.location.pathname}?allocations=${encodedData}`;
     shareLinkTextarea.value = shareUrl;
 }
 
 // 函數：從 URL 載入數據
-function loadDataFromUrl() {
+function loadAllocationsFromUrl() {
     const urlParams = new URLSearchParams(window.location.search);
-    const encodedData = urlParams.get('data');
+    const encodedData = urlParams.get('allocations');
     if (encodedData) {
         try {
-            const decodedData = JSON.parse(atob(encodedData));
-            // 合併數據，但保留 bossGroupCounter
-            const originalBossGroupCounter = data.bossGroupCounter;
-            Object.assign(data, decodedData);
-            data.bossGroupCounter = originalBossGroupCounter; // 恢復計數器
-
-            // 填充成員資訊
-            numMembersInput.value = data.members.length;
-            generateMemberFields(); // 先生成空欄位
-            data.members.forEach((member, index) => {
-                const memberItem = membersContainer.children[index];
-                if (memberItem) {
-                    memberItem.querySelector('.member-name').value = member.name;
-                    memberItem.querySelector('.member-address').value = member.address;
-                }
-            });
-
-            // 填充銷售資訊
-            bossSalesContainer.innerHTML = ''; // 清空現有 BOSS 區塊
-            // 重新組織 sales 數據，按 bossName 分組
-            const salesByBoss = data.sales.reduce((acc, sale) => {
-                if (!acc[sale.bossName]) {
-                    acc[sale.bossName] = [];
-                }
-                acc[sale.bossName].push(sale);
-                return acc;
-            }, {});
-
-            Object.keys(salesByBoss).forEach(bossName => {
-                addBossGroup({ bossName: bossName, items: salesByBoss[bossName] });
-            });
-
-            // 如果沒有銷售項目，則添加一個空的 BOSS 區塊
-            if (data.sales.length === 0) {
-                addBossGroup();
+            const decodedAllocations = JSON.parse(atob(encodedData));
+            // 清空現有區塊
+            bossGroupsContainer.innerHTML = '';
+            // 重新渲染 BOSS 區塊
+            for (const bossGroupId in decodedAllocations) {
+                addBossGroup(decodedAllocations[bossGroupId]);
             }
-
-
-            // 填充分帳設定
-            if (data.distribution.method === 'average') {
-                averageDistributionRadio.checked = true;
-                customShareContainer.style.display = 'none';
-            } else {
-                customDistributionRadio.checked = true;
-                customShareContainer.style.display = 'block';
-                updateCustomShareFields(); // 更新自訂分配比欄位
-                data.members.forEach((member, index) => {
-                    const customShareInput = customShareContainer.querySelector(`.member-share[data-index="${index}"]`);
-                    if (customShareInput) {
-                        customShareInput.value = (member.share * 100).toFixed(2);
-                    }
-                });
-            }
-            feeInput.value = (data.distribution.fee * 100).toFixed(2);
-
+            // 將載入的數據存回 allocations 物件
+            Object.assign(allocations, decodedAllocations);
+            updateAllocationsData(); // 確保數據同步
             calculateDistribution(); // 自動計算結果
         } catch (e) {
             console.error("解析 URL 數據失敗:", e);
-            // 如果解析失敗，則初始化為預設值
-            generateMemberFields();
-            addBossGroup();
+            addBossGroup(); // 如果解析失敗，則添加一個空的 BOSS 區塊
         }
     } else {
-        // 如果沒有 data 參數，則初始化為預設值
-        generateMemberFields();
-        addBossGroup();
+        addBossGroup(); // 如果沒有 allocations 參數，則添加一個空的 BOSS 區塊
     }
 }
 
 // 事件監聽器
-generateMembersButton.addEventListener('click', generateMemberFields);
-addBossGroupButton.addEventListener('click', addBossGroup);
+addBossGroupButton.addEventListener('click', () => addBossGroup());
 calculateButton.addEventListener('click', calculateDistribution);
-
-averageDistributionRadio.addEventListener('change', () => {
-    customShareContainer.style.display = 'none';
-    updateDataFromInputs();
-});
-customDistributionRadio.addEventListener('change', () => {
-    customShareContainer.style.display = 'block';
-    updateCustomShareFields();
-    updateDataFromInputs();
-});
-
-// 複製分帳結果按鈕
-copyResultButton.addEventListener('click', () => {
-    let resultText = "分帳結果:\n";
-    document.querySelectorAll('#result-table tbody tr').forEach(row => {
-        const name = row.cells[0].textContent;
-        const amount = row.cells[1].textContent;
-        const address = row.cells[2].textContent;
-        resultText += `${name}: ${amount} ${address ? `(${address})` : ''}\n`;
-    });
-    navigator.clipboard.writeText(resultText).then(() => {
-        alert('分帳結果已複製到剪貼簿！');
-    }).catch(err => {
-        console.error('複製失敗:', err);
-    });
-});
 
 // 複製分享連結按鈕
 copyShareLinkButton.addEventListener('click', () => {
@@ -423,11 +372,8 @@ copyShareLinkButton.addEventListener('click', () => {
     alert('分享連結已複製到剪貼簿！');
 });
 
-// 初始化：網頁載入時檢查 URL 數據
-window.addEventListener('load', loadDataFromUrl);
-
-// 確保在成員名稱或錢包地址改變時更新 data 物件
-membersContainer.addEventListener('input', updateDataFromInputs);
-bossSalesContainer.addEventListener('input', updateDataFromInputs); // 修改為 bossSalesContainer
-feeInput.addEventListener('input', updateDataFromInputs);
-customShareContainer.addEventListener('input', updateDataFromInputs);
+// 初始化：網頁載入時載入數據並初始化介面
+window.addEventListener('load', async () => {
+    await loadBossItemsData(); // 先載入 BOSS 道具數據
+    loadAllocationsFromUrl(); // 再載入分配數據
+});

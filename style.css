@@ -14,266 +14,80 @@ body {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-.main-layout {
-    display: flex;
-    justify-content: space-between;
-    gap: 20px;
-    flex-wrap: wrap; /* 允許換行 */
-}
-
-.main-layout section {
-    flex: 1;
-    min-width: 45%; /* 確保在小螢幕上有最小寬度 */
-    box-sizing: border-box; /* 包含 padding 和 border 在寬度內 */
-}
-
-h1, h2 {
-    color: #0056b3;
-}
-
-section {
-    margin-bottom: 20px;
-    padding: 15px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    background-color: #f9f9f9;
-}
-
-.form-group {
-    margin-bottom: 10px;
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap; /* 允許內部元素換行 */
-}
-
-.form-group label {
-    display: inline-block;
-    width: 120px;
-    margin-right: 10px; /* 調整 label 和 input 之間的間距 */
-    font-weight: bold;
-    flex-shrink: 0; /* 防止 label 縮小 */
-}
-
-.form-group input[type="text"],
-.form-group input[type="number"],
-.form-group select { /* 新增 select 樣式 */
-    flex-grow: 1; /* 讓輸入框和選擇框佔據剩餘空間 */
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-sizing: border-box;
-    min-width: 150px; /* 確保輸入框有最小寬度 */
-}
-
-button {
-    background-color: #007bff;
-    color: white;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 16px;
-    margin-top: 10px;
-    white-space: nowrap; /* 防止按鈕文字換行 */
-}
-
-button:hover {
-    background-color: #0056b3;
-}
-
-#members-container .member-item {
-    border: 1px solid #eee;
-    padding: 10px;
-    margin-bottom: 10px;
-    border-radius: 5px;
+.container {
+    max-width: 1200px;
+    margin: 20px auto;
     background-color: #fff;
-}
-
-.boss-group {
-    border: 1px solid #ccc;
-    padding: 15px;
-    margin-bottom: 20px;
+    padding: 20px;
     border-radius: 8px;
-    background-color: #f0f8ff; /* 淺藍色背景，區分 BOSS 區塊 */
-}
-
-.boss-group .boss-name-row {
-    display: flex;
-    align-items: center;
-    margin-bottom: 15px;
-    border-bottom: 1px dashed #a0c8e6; /* 虛線分隔 */
-    padding-bottom: 10px;
-}
-
-.boss-group .boss-name-row label {
-    width: auto;
-    margin-right: 10px;
-}
-
-.boss-group .boss-name-row input[type="text"] {
-    flex-grow: 1;
-    margin-right: 10px;
-}
-
-.sales-items-container {
-    margin-top: 10px;
-    padding-left: 20px; /* 縮排銷售項目 */
-    border-left: 2px solid #add8e6; /* 左邊框線 */
-}
-
-.sale-item {
-    border: 1px solid #eee;
-    padding: 10px;
-    margin-bottom: 10px;
-    border-radius: 5px;
-    background-color: #fff;
-    display: flex; /* 讓銷售項目內的元素水平排列 */
-    align-items: center;
-    gap: 10px; /* 元素之間的間距 */
-}
-
-.sale-item .form-group {
-    margin-bottom: 0;
-    flex: 1;
-    min-width: 180px; /* 確保每個銷售項目內的 form-group 有最小寬度 */
-}
-
-.sale-item .form-group label {
-    width: auto;
-    margin-right: 5px;
-}
-
-.sale-item .form-group input,
-.sale-item .form-group select {
-    flex-grow: 1;
-    width: auto;
-}
-
-.checkbox-group {
-    display: flex;
-    align-items: center;
-    margin-left: 10px; /* 與前一個輸入框的間距 */
-}
-
-.checkbox-group input[type="checkbox"] {
-    width: auto;
-    margin-right: 5px;
-}
-
-.checkbox-group label {
-    width: auto;
-    font-weight: normal;
-}
-
-.remove-sale-item, .remove-boss-group {
-    background-color: #dc3545; /* 紅色按鈕 */
-    margin-left: 10px;
-}
-
-.remove-sale-item:hover, .remove-boss-group:hover {
-    background-color: #c82333;
-}
-
-.add-sale-item-to-boss {
-    margin-top: 10px;
-    background-color: #28a745; /* 綠色按鈕 */
-}
-
-.add-sale-item-to-boss:hover {
-    background-color: #218838;
-}
-
-#result-table {
-    width: 100%;
-    border-collapse: separate; /* 允許圓角 */
-    border-spacing: 0;
-    overflow: hidden; /* 隱藏超出圓角的部分 */
-    margin-top: 15px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08); /* 為表格添加陰影 */
-}
-
-#result-table th,
-#result-table td {
-    padding: 12px 15px;
-    text-align: center;
-    border-bottom: 1px solid #e0e0e0; /* 調整邊框顏色 */
-}
-
-#result-table th {
-    background-color: #007bff;
-    color: white;
-    font-weight: bold;
-    text-transform: uppercase;
-    letter-spacing: 0.5px; /* 增加字母間距 */
-}
-
-#result-table tbody tr:nth-child(even) {
-    background-color: #f8f8f8; /* 調整偶數行背景色 */
-}
-
-#result-table tbody tr:hover {
-    background-color: #eef; /* 調整 hover 背景色 */
-    transition: background-color 0.2s ease; /* 添加過渡效果 */
-}
-
-#result-table thead tr:first-child th:first-child {
-    border-top-left-radius: 8px;
-}
-
-#result-table thead tr:first-child th:last-child {
-    border-top-right-radius: 8px;
-}
-
-#result-table tbody tr:last-child td:first-child {
-    border-bottom-left-radius: 8px;
-}
-
-#result-table tbody tr:last-child td:last-child {
-    border-bottom-right-radius: 8px;
-}
-
-textarea {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-sizing: border-box;
-    margin-top: 10px;
-    resize: vertical;
-    display: none; /* 隱藏 JSON 顯示 */
-}
-
-/* 新增一些通用美化樣式 */
-body {
-    line-height: 1.6;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
 }
 
 h1 {
     text-align: center;
     margin-bottom: 30px;
-    font-size: 2.5em;
+    font-size: 2.8em;
     color: #0056b3;
-    text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.15);
 }
 
-h2, h3 {
-    border-bottom: 2px solid #007bff;
-    padding-bottom: 5px;
-    margin-bottom: 20px;
+h2 {
+    border-bottom: 3px solid #007bff;
+    padding-bottom: 8px;
+    margin-bottom: 25px;
     color: #0056b3;
+    font-size: 1.8em;
 }
 
-button {
-    transition: background-color 0.2s ease, transform 0.1s ease;
+h3 {
+    color: #0056b3;
+    margin-top: 20px;
+    margin-bottom: 15px;
+    font-size: 1.4em;
 }
 
-button:active {
-    transform: translateY(1px);
+h4 {
+    color: #0056b3;
+    margin-top: 15px;
+    margin-bottom: 10px;
+    font-size: 1.2em;
+}
+
+section {
+    margin-bottom: 30px;
+    padding: 20px;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    background-color: #fdfdfd;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.form-group {
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.form-group label {
+    display: inline-block;
+    width: 150px;
+    margin-right: 15px;
+    font-weight: bold;
+    color: #555;
+    flex-shrink: 0;
 }
 
 .form-group input[type="text"],
 .form-group input[type="number"],
 .form-group select {
+    flex-grow: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+    min-width: 200px;
+    font-size: 1em;
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
@@ -281,6 +95,290 @@ button:active {
 .form-group input[type="number"]:focus,
 .form-group select:focus {
     border-color: #007bff;
-    box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+    box-shadow: 0 0 8px rgba(0, 123, 255, 0.2);
     outline: none;
+}
+
+button {
+    background-color: #007bff;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1.1em;
+    margin-top: 15px;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+    white-space: nowrap;
+}
+
+button:hover {
+    background-color: #0056b3;
+    transform: translateY(-1px);
+}
+
+button:active {
+    transform: translateY(0);
+}
+
+/* BOSS Group Styles */
+.boss-group {
+    border: 1px solid #a0c8e6;
+    padding: 20px;
+    margin-bottom: 25px;
+    border-radius: 10px;
+    background-color: #e6f2ff; /* Light blue background */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+}
+
+.boss-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px dashed #add8e6;
+}
+
+.boss-header h3 {
+    margin: 0;
+    flex-grow: 1;
+    font-size: 1.6em;
+    color: #0056b3;
+}
+
+.boss-header .boss-name-select {
+    flex-grow: 1;
+    margin-right: 15px;
+    max-width: 250px; /* Limit width for select */
+}
+
+.boss-header .remove-boss-group {
+    background-color: #dc3545;
+    margin-top: 0;
+}
+
+.boss-header .remove-boss-group:hover {
+    background-color: #c82333;
+}
+
+/* Allocation Settings */
+.allocation-settings {
+    margin-bottom: 20px;
+    padding: 15px;
+    border: 1px solid #d0e0f0;
+    border-radius: 8px;
+    background-color: #f0f8ff;
+}
+
+.allocation-settings h4 {
+    margin-top: 0;
+    border-bottom: 1px solid #add8e6;
+    padding-bottom: 8px;
+    margin-bottom: 15px;
+}
+
+.allocation-settings .form-group {
+    margin-bottom: 10px;
+}
+
+.allocation-settings .form-group label {
+    width: 120px;
+}
+
+.allocation-settings .participants-input {
+    width: calc(100% - 175px); /* Adjust width based on label */
+}
+
+.custom-share-container .share-input-group {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.custom-share-container .share-input-group label {
+    width: 100px;
+    margin-right: 10px;
+}
+
+.custom-share-container .share-input-group input[type="number"] {
+    flex-grow: 1;
+}
+
+/* Boss Items Container */
+.boss-items-container {
+    margin-top: 20px;
+    padding: 15px;
+    border: 1px solid #d0e0f0;
+    border-radius: 8px;
+    background-color: #f0f8ff;
+}
+
+.boss-items-container h4 {
+    margin-top: 0;
+    border-bottom: 1px solid #add8e6;
+    padding-bottom: 8px;
+    margin-bottom: 15px;
+}
+
+.item-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); /* Responsive grid */
+    gap: 15px;
+}
+
+.item-card {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 10px;
+    text-align: center;
+    background-color: #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.item-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.item-card img {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+    margin-bottom: 8px;
+}
+
+.item-card p {
+    margin: 5px 0;
+    font-weight: bold;
+    color: #333;
+}
+
+.item-card .item-checkbox {
+    margin-top: 5px;
+    transform: scale(1.2); /* Make checkbox slightly larger */
+}
+
+/* Result Display */
+#result-display {
+    margin-top: 30px;
+}
+
+#result-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    overflow: hidden;
+    margin-top: 20px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+}
+
+#result-table th,
+#result-table td {
+    padding: 15px 20px;
+    text-align: center;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+#result-table th {
+    background-color: #007bff;
+    color: white;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    font-size: 1.1em;
+}
+
+#result-table tbody tr:nth-child(even) {
+    background-color: #f8f8f8;
+}
+
+#result-table tbody tr:hover {
+    background-color: #eef;
+    transition: background-color 0.2s ease;
+}
+
+#result-table thead tr:first-child th:first-child {
+    border-top-left-radius: 10px;
+}
+
+#result-table thead tr:first-child th:last-child {
+    border-top-right-radius: 10px;
+}
+
+#result-table tbody tr:last-child td:first-child {
+    border-bottom-left-radius: 10px;
+}
+
+#result-table tbody tr:last-child td:last-child {
+    border-bottom-right-radius: 10px;
+}
+
+#share-link {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+    margin-top: 15px;
+    resize: vertical;
+    font-size: 0.95em;
+    background-color: #f9f9f9;
+    color: #333;
+    display: block; /* Ensure it's visible */
+}
+
+#copy-share-link {
+    background-color: #6c757d; /* Gray button for copy */
+}
+
+#copy-share-link:hover {
+    background-color: #5a6268;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .main-layout {
+        flex-direction: column;
+    }
+
+    .main-layout section {
+        min-width: 100%;
+    }
+
+    .form-group label {
+        width: 100%;
+        margin-right: 0;
+        margin-bottom: 5px;
+    }
+
+    .form-group input[type="text"],
+    .form-group input[type="number"],
+    .form-group select {
+        min-width: unset;
+        width: 100%;
+    }
+
+    .boss-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .boss-header .boss-name-select {
+        margin-right: 0;
+        margin-bottom: 10px;
+        max-width: 100%;
+    }
+
+    .boss-header .remove-boss-group {
+        width: 100%;
+    }
+
+    .item-list {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    }
 }
