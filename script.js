@@ -82,7 +82,7 @@ function addSaleItem() {
             <input type="number" class="item-price" min="0" value="0">
         </div>
         <div class="form-group">
-            <label>NESO:</label>
+            <label> NESO:</label>
             <input type="number" class="neso-price" min="0" value="0">
         </div>
         <button class="remove-sale-item">移除</button>
@@ -150,12 +150,15 @@ function updateDataFromInputs() {
 function calculateDistribution() {
     updateDataFromInputs(); // 確保數據是最新的
 
-    let totalRevenue = 0;
+    let totalSalePrice = 0;
+    let totalNesoPrice = 0;
     data.sales.forEach(sale => {
-        totalRevenue += sale.price + sale.neso;
+        totalSalePrice += sale.price;
+        totalNesoPrice += sale.neso;
     });
 
-    const netRevenue = totalRevenue * (1 - data.distribution.fee);
+    // 銷售價格扣除手續費，NESO價格不扣手續費
+    const netRevenue = (totalSalePrice * (1 - data.distribution.fee)) + totalNesoPrice;
 
     let distributedAmounts = {};
 
@@ -199,7 +202,6 @@ function calculateDistribution() {
         resultText += `${member.name}: ${amount.toFixed(2)} ${member.address ? `(${member.address})` : ''}\n`;
     });
 
-    resultText += "\n原始數據 (JSON 格式):\n" + JSON.stringify(data, null, 2);
     resultTextarea.value = resultText;
 
     generateShareLink();

@@ -96,4 +96,6 @@ textarea {
     box-sizing: border-box;
     margin-top: 10px;
     resize: vertical;
+    /* 隱藏 JSON 顯示 */
+    display: none;
 }
