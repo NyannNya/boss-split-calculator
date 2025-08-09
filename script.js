@@ -760,44 +760,73 @@ function calculateDistribution() {
     renderNesoSummary();
 }
 
-// NESO 總計與每人 NESO 統計
+// 總收益與每人「應得金額」統計（售價扣手續費 + NESO，依各 BOSS 分配方式計算）
 function renderNesoSummary() {
     const totalEl = document.getElementById('total-neso');
     const tableBody = document.querySelector('#neso-summary-table tbody');
     if (!totalEl || !tableBody) return;
 
-    const perPerson = {};
-    let grand = 0;
+    const expectedPerPerson = {};
+    let totalRevenue = 0;
 
-    // 聚合 allocations 中的 NESO
     for (const id in allocations) {
         const bossData = allocations[id];
-        if (!bossData || !Array.isArray(bossData.selectedItems)) continue;
+        if (!bossData || !Array.isArray(bossData.selectedItems) || !Array.isArray(bossData.participants) || bossData.participants.length === 0) continue;
+
+        const feeRate = Number(bossData.fee || 0);
+        let netTotal = 0;
+
         bossData.selectedItems.forEach(item => {
-            if (!item.isNeso) return;
-            const amt = Number(item.nesoAmount || 0);
-            if (amt <= 0) return;
-            grand += amt;
-            const owner = item.owner || '';
-            if (owner) perPerson[owner] = (perPerson[owner] || 0) + amt;
+            if (item.isNeso) {
+                const amt = Number(item.nesoAmount || 0);
+                if (amt > 0) netTotal += amt; // NESO 不扣手續費
+            } else {
+                const price = Number(item.price);
+                if (!isNaN(price) && price > 0) {
+                    netTotal += price * (1 - feeRate);
+                }
+            }
         });
+
+        if (netTotal <= 0) continue;
+        totalRevenue += netTotal;
+
+        // 計算此 BOSS 的每人應得
+        if (bossData.distributionMethod === 'custom' && bossData.allocations && Object.keys(bossData.allocations).length > 0) {
+            let sumShare = 0;
+            bossData.participants.forEach(p => sumShare += (bossData.allocations[p] || 0));
+            if (sumShare <= 0) {
+                // fallback 平均
+                const per = netTotal / bossData.participants.length;
+                bossData.participants.forEach(p => expectedPerPerson[p] = (expectedPerPerson[p] || 0) + per);
+            } else {
+                bossData.participants.forEach(p => {
+                    const share = bossData.allocations[p] || 0; // 已是小數（如 0.2）
+                    expectedPerPerson[p] = (expectedPerPerson[p] || 0) + netTotal * share;
+                });
+            }
+        } else {
+            // 平均分配
+            const per = netTotal / bossData.participants.length;
+            bossData.participants.forEach(p => expectedPerPerson[p] = (expectedPerPerson[p] || 0) + per);
+        }
     }
 
-    totalEl.textContent = `所有 BOSS NESO 總計：${grand}`;
+    totalEl.textContent = `所有 BOSS 總收益：${totalRevenue.toFixed(2)}`;
     tableBody.innerHTML = '';
-    const names = Object.keys(perPerson).sort((a,b) => perPerson[b]-perPerson[a]);
+    const names = Object.keys(expectedPerPerson).sort((a,b) => expectedPerPerson[b]-expectedPerPerson[a]);
     if (names.length === 0) {
         const row = tableBody.insertRow();
         const c = row.insertCell();
         c.colSpan = 2;
-        c.textContent = '尚無 NESO 分配資料';
+        c.textContent = '尚無可統計的收益資料';
         c.style.textAlign = 'center';
         return;
     }
     names.forEach(name => {
         const row = tableBody.insertRow();
         row.insertCell().textContent = name;
-        row.insertCell().textContent = perPerson[name];
+        row.insertCell().textContent = expectedPerPerson[name].toFixed(2);
     });
 }
 
