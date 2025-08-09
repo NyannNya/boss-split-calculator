@@ -284,6 +284,13 @@ function addBossGroup(bossAllocationData = {}) {
                 <input type="radio" class="distribution-method" name="distribution-method-${bossGroupId}" value="custom" ${bossAllocationData.distributionMethod === 'custom' ? 'checked' : ''}>
                 <label>自訂分配比</label>
             </div>
+            <div class="form-group">
+                <label>顯示選項:</label>
+                <label class="participant-chip" title="隱藏未設定的道具">
+                    <input type="checkbox" class="hide-unset-toggle" ${bossAllocationData.hideUnset ? 'checked' : ''}>
+                    <span>隱藏未設定道具</span>
+                </label>
+            </div>
             <div class="custom-share-container" style="${bossAllocationData.distributionMethod === 'custom' ? 'display: block;' : 'display: none;'}">
                 <!-- 自訂分配比輸入欄位將在此處動態生成 -->
             </div>
@@ -310,6 +317,7 @@ function addBossGroup(bossAllocationData = {}) {
     const distributionMethodRadios = bossGroupDiv.querySelectorAll(`.distribution-method[name="distribution-method-${bossGroupId}"]`);
     const customShareContainer = bossGroupDiv.querySelector('.custom-share-container');
     const itemListContainer = bossGroupDiv.querySelector('.item-list');
+    const hideUnsetToggle = bossGroupDiv.querySelector('.hide-unset-toggle');
 
     // 填充 BOSS 名稱
     if (bossAllocationData.bossName) {
@@ -371,6 +379,13 @@ function addBossGroup(bossAllocationData = {}) {
         bossGroupDiv.remove();
         updateAllocationsData();
     });
+
+    if (hideUnsetToggle) {
+        hideUnsetToggle.addEventListener('change', function() {
+            updateAllocationsData();
+            applyHideUnset(bossGroupDiv);
+        });
+    }
 
     // 初始化時將數據存入 allocations
     updateAllocationsData();
@@ -458,6 +473,8 @@ function renderBossItems(bossGroupDiv, bossName, selectedItems = []) {
         const nesoAmountInput = card.querySelector('.neso-amount-input');
         if (nesoAmountInput) nesoAmountInput.addEventListener('input', updateAllocationsData);
     });
+    // 套用隱藏規則
+    applyHideUnset(bossGroupDiv);
 }
 
 function fillOwnerOptions(selectEl, participants) {
@@ -493,6 +510,7 @@ function updateAllocationsData() {
     const participants = Array.from(bossGroupDiv.querySelectorAll('.participant-checkbox:checked')).map(checkbox => checkbox.value);
         const distributionMethod = bossGroupDiv.querySelector('.distribution-method:checked').value;
         const fee = parseFloat(bossGroupDiv.querySelector('.fee-input').value) / 100 || 0;
+    const hideUnset = !!bossGroupDiv.querySelector('.hide-unset-toggle')?.checked;
 
         let currentAllocations = {};
         if (distributionMethod === 'custom') {
@@ -550,11 +568,40 @@ function updateAllocationsData() {
             distributionMethod,
             allocations: currentAllocations,
             fee,
-            selectedItems
+            selectedItems,
+            hideUnset
         };
     });
     generateShareLink();
     renderNesoSummary();
+    // 更新後依據隱藏規則重新套用一次（所有 BOSS 區塊）
+    document.querySelectorAll('.boss-group').forEach(group => applyHideUnset(group));
+}
+
+// 根據「持有者+有效數值」來隱藏未設定道具
+function applyHideUnset(bossGroupDiv) {
+    const hide = !!bossGroupDiv.querySelector('.hide-unset-toggle')?.checked;
+    const cards = bossGroupDiv.querySelectorAll('.item-card');
+    cards.forEach(card => {
+        if (!hide) {
+            card.classList.remove('hidden');
+            return;
+        }
+        const itemName = card.dataset.itemName || (card.querySelector('p')?.textContent || '').trim();
+        const isNeso = (itemName || '').toLowerCase().includes('neso');
+        const owner = card.querySelector('.item-owner-select')?.value || '';
+        if (!owner) {
+            card.classList.add('hidden');
+            return;
+        }
+        if (isNeso) {
+            const amt = parseFloat(card.querySelector('.neso-amount-input')?.value || '0') || 0;
+            card.classList.toggle('hidden', !(amt > 0));
+        } else {
+            const price = parseFloat(card.querySelector('.item-price-input')?.value || '');
+            card.classList.toggle('hidden', !(price > 0));
+        }
+    });
 }
 
 // 函數：計算分帳結果（根據售價/手續費/NESO 與持有者，產生轉帳建議）

@@ -383,6 +383,7 @@ button:active {
     transform: translateY(-3px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
+.item-card.hidden { display: none; }
 
 .item-card img {
     width: 60px;
