@@ -382,9 +382,14 @@ function addBossGroup(bossAllocationData = {}) {
 
     if (hideUnsetToggle) {
         hideUnsetToggle.addEventListener('change', function() {
+            const chip = hideUnsetToggle.closest('.participant-chip');
+            if (chip) chip.classList.toggle('checked', this.checked);
             updateAllocationsData();
             applyHideUnset(bossGroupDiv);
         });
+        // 初始化 chip 樣式（與參與者 chip 一致）
+        const chipInit = hideUnsetToggle.closest('.participant-chip');
+        if (chipInit) chipInit.classList.toggle('checked', hideUnsetToggle.checked);
     }
 
     // 初始化時將數據存入 allocations

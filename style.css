@@ -548,6 +548,35 @@ button:active {
     border-color: #93c5fd;
 }
 
+/* Reusable chip style so chips outside participants container look the same */
+.participant-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+    border: 1px solid #d1d5db;
+    border-radius: 16px;
+    background: #fff;
+    cursor: pointer;
+    user-select: none;
+    white-space: nowrap; /* 不在字中換行，維持一行 */
+}
+.participant-chip input[type="checkbox"] {
+    accent-color: #007bff;
+    transform: scale(1.1);
+}
+.participant-chip.checked {
+    background: #e6f0ff;
+    border-color: #93c5fd;
+}
+
+/* Override generic form-group label rules for chip labels */
+.form-group label.participant-chip {
+    width: auto;              /* 不套用 150px 固定寬度 */
+    margin-right: 0;          /* chip 自帶 padding，移除多餘間距 */
+    font-weight: normal;      /* 與參與者 chip 一致（非粗體） */
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
     .main-layout {
