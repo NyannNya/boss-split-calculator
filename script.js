@@ -99,18 +99,26 @@ function generateBossOptions() {
     return options;
 }
 
-// 函數：生成道具卡片
-function generateItemCard(bossName, item, isChecked = false, nesoAmount = 0) {
+// 函數：生成道具卡片（含售價與持有者選擇）
+function generateItemCard(bossName, item, isChecked = false, nesoAmount = 0, price = '', owner = '') {
     const itemCardDiv = document.createElement('div');
     itemCardDiv.classList.add('item-card');
     let nesoInputHtml = '';
-    if (item.item_name.includes('neso')) {
+    const isNeso = item.item_name.toLowerCase().includes('neso');
+    if (isNeso) {
         nesoInputHtml = `<input type="number" class="neso-amount-input" placeholder="NESO 數量" value="${nesoAmount}" min="0">`;
     }
+    const priceInputHtml = !isNeso ? `<input type="number" class="item-price-input" placeholder="售價 (自動扣手續費)" value="${price !== undefined && price !== null ? price : ''}" min="0" step="0.01">` : '';
+    const ownerSelectHtml = `<select class="item-owner-select" data-default-owner="${owner}"></select>`;
     itemCardDiv.innerHTML = `
         <img src="${item.image_url}" alt="${item.item_name}">
         <p>${item.item_name}</p>
+        ${priceInputHtml}
         ${nesoInputHtml}
+        <div class="owner-row">
+            <label>持有者</label>
+            ${ownerSelectHtml}
+        </div>
         <input type="checkbox" class="item-checkbox" data-item-name="${item.item_name}" ${isChecked ? 'checked' : ''}>
     `;
     return itemCardDiv;
@@ -192,18 +200,30 @@ function updateParticipantsCheckboxes() {
         allParticipants.forEach(p => {
             const isChecked = currentSelectedParticipants.includes(p);
             const checkboxId = `participant-${bossGroupId}-${p.replace(/\s/g, '-')}`;
-            const checkboxHtml = `
-                <input type="checkbox" id="${checkboxId}" class="participant-checkbox" value="${p}" ${isChecked ? 'checked' : ''}>
-                <label for="${checkboxId}">${p}</label>
-            `;
-            container.insertAdjacentHTML('beforeend', checkboxHtml);
+            const wrapper = document.createElement('label');
+            wrapper.className = `participant-chip ${isChecked ? 'checked' : ''}`;
+            wrapper.setAttribute('for', checkboxId);
+            const input = document.createElement('input');
+            input.type = 'checkbox';
+            input.id = checkboxId;
+            input.className = 'participant-checkbox';
+            input.value = p;
+            input.checked = isChecked;
+            const span = document.createElement('span');
+            span.textContent = p;
+            wrapper.appendChild(input);
+            wrapper.appendChild(span);
+            container.appendChild(wrapper);
         });
 
         // 重新綁定事件監聽器
         container.querySelectorAll('.participant-checkbox').forEach(checkbox => {
             checkbox.addEventListener('change', function() {
+                const label = checkbox.closest('.participant-chip');
+                if (label) label.classList.toggle('checked', checkbox.checked);
                 const selectedParticipants = Array.from(container.querySelectorAll('.participant-checkbox:checked')).map(cb => cb.value);
                 updateCustomShareFields(bossGroupDiv, selectedParticipants, allocations[bossGroupId]?.allocations || {});
+                populateOwnerSelects(bossGroupDiv, selectedParticipants);
                 updateAllocationsData();
             });
         });
@@ -280,7 +300,7 @@ function addBossGroup(bossAllocationData = {}) {
     if (bossAllocationData.bossName) {
         bossNameSelect.value = bossAllocationData.bossName;
         bossNameDisplay.textContent = bossAllocationData.bossName;
-        renderBossItems(bossGroupDiv, bossAllocationData.bossName, bossAllocationData.selectedItems || []);
+    renderBossItems(bossGroupDiv, bossAllocationData.bossName, bossAllocationData.selectedItems || []);
     }
 
     // 填充參與人員勾選框
@@ -350,8 +370,9 @@ function addBossGroup(bossAllocationData = {}) {
         });
 
         // 更新自訂分配比欄位和數據
-        const selectedParticipants = Array.from(participantsCheckboxContainer.querySelectorAll('.participant-checkbox:checked')).map(cb => cb.value);
+    const selectedParticipants = Array.from(participantsCheckboxContainer.querySelectorAll('.participant-checkbox:checked')).map(cb => cb.value);
         updateCustomShareFields(bossGroupDiv, selectedParticipants, allocations[bossGroupId]?.allocations || {});
+    populateOwnerSelects(bossGroupDiv, selectedParticipants);
         updateAllocationsData();
 
         // 更新按鈕文字
@@ -365,11 +386,15 @@ function renderBossItems(bossGroupDiv, bossName, selectedItems = []) {
     itemListContainer.innerHTML = '';
     const itemsForBoss = bossItemsData.filter(item => item.boss_name === bossName);
 
+    const selectedParticipants = Array.from(bossGroupDiv.querySelectorAll('.participant-checkbox:checked')).map(cb => cb.value);
+
     itemsForBoss.forEach(item => {
-        const isChecked = selectedItems.some(selected => selected.name === item.item_name);
-        const existingNesoItem = selectedItems.find(selected => selected.name === item.item_name && selected.nesoAmount !== undefined);
-        const nesoAmount = existingNesoItem ? existingNesoItem.nesoAmount : 0;
-        const itemCard = generateItemCard(bossName, item, isChecked, nesoAmount);
+        const saved = selectedItems.find(selected => selected.name === item.item_name) || {};
+        const isChecked = !!saved.name;
+        const nesoAmount = saved.nesoAmount ?? 0;
+        const price = saved.price ?? '';
+        const owner = saved.owner ?? '';
+        const itemCard = generateItemCard(bossName, item, isChecked, nesoAmount, price, owner);
         itemListContainer.appendChild(itemCard);
 
         itemCard.querySelector('.item-checkbox').addEventListener('change', function() {
@@ -382,6 +407,50 @@ function renderBossItems(bossGroupDiv, bossName, selectedItems = []) {
                 updateAllocationsData();
             });
         }
+
+        const priceInput = itemCard.querySelector('.item-price-input');
+        if (priceInput) {
+            priceInput.addEventListener('input', function() {
+                updateAllocationsData();
+            });
+        }
+
+        const ownerSelect = itemCard.querySelector('.item-owner-select');
+        if (ownerSelect) {
+            // 先填入參與者選項
+            fillOwnerOptions(ownerSelect, selectedParticipants);
+            // 設定預設選擇
+            const def = ownerSelect.getAttribute('data-default-owner');
+            if (def && selectedParticipants.includes(def)) {
+                ownerSelect.value = def;
+            }
+            ownerSelect.addEventListener('change', function() {
+                updateAllocationsData();
+            });
+        }
+    });
+}
+
+function fillOwnerOptions(selectEl, participants) {
+    selectEl.innerHTML = '<option value="">選擇持有者</option>';
+    participants.forEach(p => {
+        const opt = document.createElement('option');
+        opt.value = p;
+        opt.textContent = p;
+        selectEl.appendChild(opt);
+    });
+}
+
+function populateOwnerSelects(bossGroupDiv, participants) {
+    const selects = bossGroupDiv.querySelectorAll('.item-owner-select');
+    selects.forEach(sel => {
+        const prev = sel.value || sel.getAttribute('data-default-owner') || '';
+        fillOwnerOptions(sel, participants);
+        if (prev && participants.includes(prev)) {
+            sel.value = prev;
+        } else {
+            sel.value = '';
+        }
     });
 }
 
@@ -392,7 +461,7 @@ function updateAllocationsData() {
     document.querySelectorAll('.boss-group').forEach(bossGroupDiv => {
         const bossGroupId = bossGroupDiv.dataset.bossGroupId;
         const bossName = bossGroupDiv.querySelector('.boss-name-select').value;
-        const participants = Array.from(bossGroupDiv.querySelectorAll('.participant-checkbox:checked')).map(checkbox => checkbox.value);
+    const participants = Array.from(bossGroupDiv.querySelectorAll('.participant-checkbox:checked')).map(checkbox => checkbox.value);
         const distributionMethod = bossGroupDiv.querySelector('.distribution-method:checked').value;
         const fee = parseFloat(bossGroupDiv.querySelector('.fee-input').value) / 100 || 0;
 
@@ -425,14 +494,20 @@ function updateAllocationsData() {
         }
 
         const selectedItems = Array.from(bossGroupDiv.querySelectorAll('.item-checkbox:checked'))
-                                .map(checkbox => {
-                                    const itemName = checkbox.dataset.itemName;
-                                    if (itemName.includes('neso')) {
-                                        const nesoAmountInput = checkbox.closest('.item-card').querySelector('.neso-amount-input');
-                                        return { name: itemName, nesoAmount: parseFloat(nesoAmountInput.value) || 0 };
-                                    }
-                                    return { name: itemName };
-                                });
+            .map(checkbox => {
+                const card = checkbox.closest('.item-card');
+                const itemName = checkbox.dataset.itemName;
+                const isNeso = itemName.toLowerCase().includes('neso');
+                const ownerSel = card.querySelector('.item-owner-select');
+                const owner = ownerSel ? ownerSel.value : '';
+                if (isNeso) {
+                    const nesoAmountInput = card.querySelector('.neso-amount-input');
+                    return { name: itemName, isNeso: true, nesoAmount: parseFloat(nesoAmountInput?.value) || 0, owner };
+                }
+                const priceInput = card.querySelector('.item-price-input');
+                const price = parseFloat(priceInput?.value);
+                return { name: itemName, isNeso: false, price: isNaN(price) ? null : price, owner };
+            });
 
         allocations[bossGroupId] = {
             bossName,
@@ -446,92 +521,152 @@ function updateAllocationsData() {
     generateShareLink();
 }
 
-// 函數：計算分帳結果 (簡化版，僅顯示選中的道具和分配對象)
+// 函數：計算分帳結果（根據售價/手續費/NESO 與持有者，產生轉帳建議）
 function calculateDistribution() {
-    updateAllocationsData(); // 確保數據是最新的
+    updateAllocationsData();
     resultTableBody.innerHTML = '';
 
-    let allTransactions = [];
+    // 全域餘額：>0 代表多收（需轉出），<0 代表少收（需收款）
+    const balances = {};
+    const nameSet = new Set(globalMembers.map(m => m.name).filter(Boolean));
+
+    let anyData = false;
+    let warnings = [];
 
     for (const bossGroupId in allocations) {
         const bossData = allocations[bossGroupId];
-        if (!bossData.bossName || bossData.selectedItems.length === 0 || bossData.participants.length === 0) {
-            continue; // 跳過不完整的 BOSS 區塊
-        }
+        if (!bossData || !Array.isArray(bossData.participants) || bossData.participants.length === 0) continue;
 
-        let totalItemsValue = 0;
-        bossData.selectedItems.forEach(item => {
-            if (item.name.includes('neso')) {
-                totalItemsValue += item.nesoAmount;
+        // 初始化參與者名稱集合
+        bossData.participants.forEach(p => nameSet.add(p));
+
+        // 計算淨收入（扣手續費；NESO 不扣）
+        let netTotal = 0;
+        const feeRate = bossData.fee || 0; // 0.05 之類
+
+        // 參與者已收金額（來自其所持有之道具）
+        const received = {};
+        bossData.participants.forEach(p => received[p] = 0);
+
+        (bossData.selectedItems || []).forEach(item => {
+            const owner = item.owner || '';
+            if (item.isNeso) {
+                const val = Number(item.nesoAmount || 0);
+                netTotal += val;
+                if (owner) {
+                    received[owner] = (received[owner] || 0) + val;
+                } else if (val > 0) {
+                    warnings.push(`「${bossData.bossName || '未選擇 BOSS'}」的 NESO 項目缺少持有者，金額 ${val}`);
+                }
             } else {
-                totalItemsValue += 1; // 其他道具假設價值為 1
+                const price = Number(item.price);
+                if (isNaN(price) || price <= 0) {
+                    return; // 價格無效則忽略該項
+                }
+                const net = price * (1 - feeRate);
+                netTotal += net;
+                if (owner) {
+                    received[owner] = (received[owner] || 0) + net;
+                } else {
+                    warnings.push(`「${bossData.bossName || '未選擇 BOSS'}」的道具「${item.name}」缺少持有者`);
+                }
             }
         });
-        let distributedAmounts = {};
 
-        if (bossData.distributionMethod === 'average') {
-            const amountPerParticipant = totalItemsValue / bossData.participants.length;
-            bossData.participants.forEach(p => {
-                distributedAmounts[p] = amountPerParticipant;
-            });
-        } else { // custom
-            let totalCustomShare = 0; // 這裡的 totalCustomShare 應該是百分比的總和
-            bossData.participants.forEach(p => {
-                totalCustomShare += (bossData.allocations[p] * 100) || 0; // 轉換回百分比計算總和
-            });
+        if (netTotal === 0) continue;
+        anyData = true;
 
-            if (totalCustomShare > 0) {
-                bossData.participants.forEach(p => {
-                    // 使用儲存的小數比例來計算
-                    distributedAmounts[p] = totalItemsValue * (bossData.allocations[p] || 0);
-                });
+        // 計算應得份額
+        const expected = {};
+        if (bossData.distributionMethod === 'average' || !bossData.allocations || Object.keys(bossData.allocations).length === 0) {
+            const per = netTotal / bossData.participants.length;
+            bossData.participants.forEach(p => expected[p] = per);
+        } else {
+            let sumShare = 0;
+            bossData.participants.forEach(p => sumShare += (bossData.allocations[p] || 0));
+            if (sumShare <= 0) {
+                // fallback 平均
+                const per = netTotal / bossData.participants.length;
+                bossData.participants.forEach(p => expected[p] = per);
             } else {
-                // 如果自訂分配比總和為 0，則將所有分配比設為 0
                 bossData.participants.forEach(p => {
-                    distributedAmounts[p] = 0;
+                    expected[p] = netTotal * (bossData.allocations[p] || 0);
                 });
             }
         }
 
+        // 更新餘額：已收 - 應得
         bossData.participants.forEach(p => {
-            allTransactions.push({
-                boss: bossData.bossName,
-                participant: p,
-                share: distributedAmounts[p],
-                items: bossData.selectedItems.map(item => {
-                    if (item.name.includes('neso')) {
-                        return `${item.name} (${item.nesoAmount})`;
-                    }
-                    return item.name;
-                }).join(', ')
-            });
+            const delta = (received[p] || 0) - (expected[p] || 0);
+            balances[p] = (balances[p] || 0) + delta;
         });
     }
 
-    if (allTransactions.length === 0) {
+    // 對未參與任何 boss 但在全域名單中的人補 0
+    nameSet.forEach(n => { if (!(n in balances)) balances[n] = 0; });
+
+    // 產生轉帳建議
+    const payers = [];
+    const receivers = [];
+    for (const name in balances) {
+        const amt = Number(balances[name] || 0);
+        if (Math.abs(amt) < 1e-9) continue;
+        if (amt > 0) payers.push({ name, amount: amt });
+        else receivers.push({ name, amount: -amt });
+    }
+
+    if (!anyData || (payers.length === 0 && receivers.length === 0)) {
         const row = resultTableBody.insertRow();
         const cell = row.insertCell();
-        cell.colSpan = 4;
-        cell.textContent = '沒有可計算的分配結果。';
+        cell.colSpan = 3;
+        cell.textContent = '沒有可計算的分配結果（可能未輸入售價或 NESO 數量）。';
+        cell.style.textAlign = 'center';
+        if (warnings.length) showToast(warnings[0], 'error');
+        return;
+    }
+
+    payers.sort((a, b) => b.amount - a.amount);
+    receivers.sort((a, b) => b.amount - a.amount);
+
+    const transfers = [];
+    let i = 0, j = 0;
+    while (i < payers.length && j < receivers.length) {
+        const pay = payers[i];
+        const rec = receivers[j];
+        const t = Math.min(pay.amount, rec.amount);
+        if (t > 0) transfers.push({ from: pay.name, to: rec.name, amount: t });
+        pay.amount -= t;
+        rec.amount -= t;
+        if (pay.amount <= 1e-9) i++;
+        if (rec.amount <= 1e-9) j++;
+    }
+
+    // 繪製結果表頭
+    const table = document.getElementById('result-table');
+    table.querySelector('thead').innerHTML = `
+        <tr>
+            <th>支付方</th>
+            <th>接收方</th>
+            <th>金額</th>
+        </tr>
+    `;
+
+    if (transfers.length === 0) {
+        const row = resultTableBody.insertRow();
+        const cell = row.insertCell();
+        cell.colSpan = 3;
+        cell.textContent = '所有人份額相等，無需轉帳。';
         cell.style.textAlign = 'center';
     } else {
-        const table = document.getElementById('result-table');
-        table.querySelector('thead').innerHTML = `
-            <tr>
-                <th>BOSS</th>
-                <th>參與者</th>
-                <th>應得份額 (價值)</th>
-                <th>分配道具</th>
-            </tr>
-        `;
-        allTransactions.forEach(tx => {
+        transfers.forEach(tx => {
             const row = resultTableBody.insertRow();
-            row.insertCell().textContent = tx.boss;
-            row.insertCell().textContent = tx.participant;
-            row.insertCell().textContent = tx.share.toFixed(2);
-            row.insertCell().textContent = tx.items;
+            row.insertCell().textContent = tx.from;
+            row.insertCell().textContent = tx.to;
+            row.insertCell().textContent = tx.amount.toFixed(2);
         });
     }
+
+    if (warnings.length) showToast(warnings[0], 'error');
 }
 
 // 函數：生成分享連結
