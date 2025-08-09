@@ -1,6 +1,7 @@
 // 全局數據
 const allocations = {}; // 用於儲存每個 BOSS 的分配設定
 let bossItemsData = []; // 將從 CSV 加載的 BOSS 道具數據
+// NESO 不固定金額：固定顯示 NESO 1/2/3，預設 0
 let globalMembers = []; // 全局參與人員和錢包列表
 
 // DOM 元素
@@ -22,7 +23,8 @@ async function loadBossItemsData() {
     try {
         const response = await fetch('boss_items.csv');
         const text = await response.text();
-        bossItemsData = parseCsv(text);
+        // 過濾掉 CSV 中含 neso 的列，NESO 改由 boss_neso.csv 提供
+        bossItemsData = parseCsv(text).filter(r => !(r.item_name || '').toLowerCase().includes('neso'));
         console.log('BOSS 道具數據已載入:', bossItemsData);
         // 檢查 bossItemsData 是否有內容
         if (bossItemsData.length === 0) {
@@ -30,8 +32,8 @@ async function loadBossItemsData() {
             setCsvStatus('error', 'CSV 內容為空');
             showToast('讀取到空的 CSV，請檢查檔案內容。', 'error');
         } else {
-            setCsvStatus('success', `CSV 已載入 (${bossItemsData.length} 筆)`);
-            showToast('CSV 載入完成', 'success');
+            setCsvStatus('success', `道具 CSV 已載入 (${bossItemsData.length} 筆)`);
+            showToast('道具 CSV 載入完成', 'success');
         }
     } catch (error) {
         console.error('載入 boss_items.csv 失敗:', error);
@@ -39,6 +41,8 @@ async function loadBossItemsData() {
         showToast('載入 BOSS 道具數據失敗，請確認 boss_items.csv 是否存在且可讀取。', 'error');
     }
 }
+
+// 不再需要載入 boss_neso.csv
 
 // 函數：解析 CSV 數據
 function parseCsv(text) {
@@ -103,6 +107,7 @@ function generateBossOptions() {
 function generateItemCard(bossName, item, isChecked = false, nesoAmount = 0, price = '', owner = '') {
     const itemCardDiv = document.createElement('div');
     itemCardDiv.classList.add('item-card');
+    itemCardDiv.dataset.itemName = item.item_name;
     let nesoInputHtml = '';
     const isNeso = item.item_name.toLowerCase().includes('neso');
     if (isNeso) {
@@ -119,7 +124,6 @@ function generateItemCard(bossName, item, isChecked = false, nesoAmount = 0, pri
             <label>持有者</label>
             ${ownerSelectHtml}
         </div>
-        <input type="checkbox" class="item-checkbox" data-item-name="${item.item_name}" ${isChecked ? 'checked' : ''}>
     `;
     return itemCardDiv;
 }
@@ -228,11 +232,13 @@ function updateParticipantsCheckboxes() {
             });
         });
 
-        // 處理全選按鈕的狀態
-        const selectAllButton = bossGroupDiv.querySelector('.select-all-participants');
-        if (selectAllButton) {
-            const allChecked = allParticipants.every(p => currentSelectedParticipants.includes(p));
-            selectAllButton.textContent = allChecked ? '取消全選' : '全選';
+        // 處理全選 chip 的狀態
+        const selectAllChip = bossGroupDiv.querySelector('.select-all-participants');
+        const selectAllCheckbox = bossGroupDiv.querySelector('.select-all-checkbox');
+        if (selectAllChip && selectAllCheckbox) {
+            const allChecked = allParticipants.length > 0 && allParticipants.every(p => currentSelectedParticipants.includes(p));
+            selectAllCheckbox.checked = allChecked;
+            selectAllChip.classList.toggle('checked', allChecked);
         }
     });
     updateAllocationsData(); // 更新數據以反映參與者變化
@@ -258,7 +264,10 @@ function addBossGroup(bossAllocationData = {}) {
             <h4>分配對象與比例</h4>
             <div class="form-group">
                 <label>參與人員:</label>
-                <button class="select-all-participants">全選</button>
+                <label class="participant-chip select-all-participants" title="全選/取消全選">
+                    <input type="checkbox" class="select-all-checkbox" />
+                    <span>全選</span>
+                </label>
                 <div class="participants-checkbox-container">
                     <!-- 全局參與人員勾選框將在此處動態生成 -->
                 </div>
@@ -290,7 +299,8 @@ function addBossGroup(bossAllocationData = {}) {
 
     const bossNameSelect = bossGroupDiv.querySelector('.boss-name-select');
     const bossNameDisplay = bossGroupDiv.querySelector('.boss-name-display');
-    const selectAllParticipantsButton = bossGroupDiv.querySelector('.select-all-participants'); // 新增全選按鈕引用
+    const selectAllParticipantsChip = bossGroupDiv.querySelector('.select-all-participants');
+    const selectAllCheckbox = bossGroupDiv.querySelector('.select-all-checkbox');
     const participantsCheckboxContainer = bossGroupDiv.querySelector('.participants-checkbox-container');
     const distributionMethodRadios = bossGroupDiv.querySelectorAll(`.distribution-method[name="distribution-method-${bossGroupId}"]`);
     const customShareContainer = bossGroupDiv.querySelector('.custom-share-container');
@@ -360,24 +370,22 @@ function addBossGroup(bossAllocationData = {}) {
     // 初始化時將數據存入 allocations
     updateAllocationsData();
 
-    // 全選/取消全選按鈕事件監聽器
-    selectAllParticipantsButton.addEventListener('click', function() {
-        const allCheckboxes = participantsCheckboxContainer.querySelectorAll('.participant-checkbox');
-        const allChecked = Array.from(allCheckboxes).every(cb => cb.checked);
-
-        allCheckboxes.forEach(checkbox => {
-            checkbox.checked = !allChecked;
+    // 全選/取消全選（chip 樣式）
+    if (selectAllCheckbox) {
+        selectAllCheckbox.addEventListener('change', function() {
+            const allCheckboxes = participantsCheckboxContainer.querySelectorAll('.participant-checkbox');
+            const target = this.checked;
+            allCheckboxes.forEach(checkbox => {
+                checkbox.checked = target;
+                const label = checkbox.closest('.participant-chip');
+                if (label) label.classList.toggle('checked', target);
+            });
+            const selectedParticipants = Array.from(participantsCheckboxContainer.querySelectorAll('.participant-checkbox:checked')).map(cb => cb.value);
+            updateCustomShareFields(bossGroupDiv, selectedParticipants, allocations[bossGroupId]?.allocations || {});
+            populateOwnerSelects(bossGroupDiv, selectedParticipants);
+            updateAllocationsData();
         });
-
-        // 更新自訂分配比欄位和數據
-    const selectedParticipants = Array.from(participantsCheckboxContainer.querySelectorAll('.participant-checkbox:checked')).map(cb => cb.value);
-        updateCustomShareFields(bossGroupDiv, selectedParticipants, allocations[bossGroupId]?.allocations || {});
-    populateOwnerSelects(bossGroupDiv, selectedParticipants);
-        updateAllocationsData();
-
-        // 更新按鈕文字
-        this.textContent = allChecked ? '全選' : '取消全選';
-    });
+    }
 }
 
 // 函數：渲染 BOSS 掉落道具列表
@@ -390,16 +398,12 @@ function renderBossItems(bossGroupDiv, bossName, selectedItems = []) {
 
     itemsForBoss.forEach(item => {
         const saved = selectedItems.find(selected => selected.name === item.item_name) || {};
-        const isChecked = !!saved.name;
+        const isChecked = true; // 不再使用勾選，改以持有者+有效值判定
         const nesoAmount = saved.nesoAmount ?? 0;
         const price = saved.price ?? '';
         const owner = saved.owner ?? '';
         const itemCard = generateItemCard(bossName, item, isChecked, nesoAmount, price, owner);
         itemListContainer.appendChild(itemCard);
-
-        itemCard.querySelector('.item-checkbox').addEventListener('change', function() {
-            updateAllocationsData();
-        });
 
         const nesoAmountInput = itemCard.querySelector('.neso-amount-input');
         if (nesoAmountInput) {
@@ -428,6 +432,26 @@ function renderBossItems(bossGroupDiv, bossName, selectedItems = []) {
                 updateAllocationsData();
             });
         }
+    });
+
+    // 附加 NESO 1/2/3 卡片（預設 0）
+    const nesoImg = 'https://msu.io/marketplace/images/neso.png';
+    ['NESO 1', 'NESO 2', 'NESO 3'].forEach((label, idx) => {
+    const saved = selectedItems.find(si => (si.name || '').toLowerCase() === label.toLowerCase()) || {};
+    const amountDefault = saved.nesoAmount ?? 0;
+        const owner = saved.owner ?? '';
+        const item = { boss_name: bossName, item_name: label, image_url: nesoImg };
+        const card = generateItemCard(bossName, item, true, amountDefault, '', owner);
+        itemListContainer.appendChild(card);
+        const ownerSelect = card.querySelector('.item-owner-select');
+        if (ownerSelect) {
+            fillOwnerOptions(ownerSelect, selectedParticipants);
+            const def = ownerSelect.getAttribute('data-default-owner');
+            if (def && selectedParticipants.includes(def)) ownerSelect.value = def;
+            ownerSelect.addEventListener('change', updateAllocationsData);
+        }
+        const nesoAmountInput = card.querySelector('.neso-amount-input');
+        if (nesoAmountInput) nesoAmountInput.addEventListener('input', updateAllocationsData);
     });
 }
 
@@ -493,20 +517,26 @@ function updateAllocationsData() {
             }
         }
 
-        const selectedItems = Array.from(bossGroupDiv.querySelectorAll('.item-checkbox:checked'))
-            .map(checkbox => {
-                const card = checkbox.closest('.item-card');
-                const itemName = checkbox.dataset.itemName;
-                const isNeso = itemName.toLowerCase().includes('neso');
+        // 改為：有持有者且數值有效，即視為選取
+        const selectedItems = Array.from(bossGroupDiv.querySelectorAll('.item-card'))
+            .map(card => {
+                const itemName = card.dataset.itemName || (card.querySelector('p')?.textContent || '').trim();
+                const isNeso = (itemName || '').toLowerCase().includes('neso');
                 const ownerSel = card.querySelector('.item-owner-select');
                 const owner = ownerSel ? ownerSel.value : '';
                 if (isNeso) {
                     const nesoAmountInput = card.querySelector('.neso-amount-input');
                     return { name: itemName, isNeso: true, nesoAmount: parseFloat(nesoAmountInput?.value) || 0, owner };
+                } else {
+                    const priceInput = card.querySelector('.item-price-input');
+                    const price = parseFloat(priceInput?.value);
+                    return { name: itemName, isNeso: false, price: isNaN(price) ? null : price, owner };
                 }
-                const priceInput = card.querySelector('.item-price-input');
-                const price = parseFloat(priceInput?.value);
-                return { name: itemName, isNeso: false, price: isNaN(price) ? null : price, owner };
+            })
+            .filter(it => {
+                if (!it.owner) return false;
+                if (it.isNeso) return (it.nesoAmount || 0) > 0;
+                return it.price !== null && it.price > 0;
             });
 
         allocations[bossGroupId] = {
