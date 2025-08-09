@@ -887,7 +887,7 @@ if (calculateButtonTop) {
 if (resetButton) {
     resetButton.addEventListener('click', () => {
         // 重設所有狀態
-        allocationsCount = 0;
+        for (const k in allocations) delete allocations[k];
         bossGroupsContainer.innerHTML = '';
         globalMembersContainer.innerHTML = '';
         addMemberInput();
@@ -898,6 +898,7 @@ if (resetButton) {
         shareLinkTextarea.value = '';
         showToast('已重設為初始狀態', 'info');
         generateShareLink();
+        renderNesoSummary();
     });
 }
 
