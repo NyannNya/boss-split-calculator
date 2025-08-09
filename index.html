@@ -21,6 +21,7 @@
         <div class="main-layout">
             <section id="global-members-section">
                 <h2>參與人員清單</h2>
+                <p class="note">備註：只支援英文名稱（A-Z, a-z, 0-9, 空白、底線_、連字號-）</p>
                 <div id="global-members-container">
                     <!-- 人員和錢包輸入將在此處動態生成 -->
                     <div class="member-input-group">
@@ -62,6 +63,20 @@
             <h3>分享連結</h3>
             <textarea id="share-link" rows="3" readonly></textarea>
             <button id="copy-share-link">複製分享連結</button>
+        </section>
+
+        <section id="summary-section">
+            <h2>總計與 NESO 分配</h2>
+            <div id="total-neso">所有 BOSS NESO 總計：0</div>
+            <table id="neso-summary-table">
+                <thead>
+                    <tr>
+                        <th>成員</th>
+                        <th>NESO 分配</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
         </section>
     </div>
 

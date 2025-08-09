@@ -121,7 +121,6 @@ function generateItemCard(bossName, item, isChecked = false, nesoAmount = 0, pri
         ${priceInputHtml}
         ${nesoInputHtml}
         <div class="owner-row">
-            <label>持有者</label>
             ${ownerSelectHtml}
         </div>
     `;
@@ -166,6 +165,11 @@ function addMemberInput(memberName = '', memberWallet = '') {
     });
 
     memberInputGroup.querySelector('.member-name-input').addEventListener('input', function() {
+        // 僅允許英數、空白、底線與連字號
+        const allowed = this.value.replace(/[^A-Za-z0-9 _-]/g, '');
+        if (allowed !== this.value) {
+            this.value = allowed;
+        }
         updateGlobalMembers();
         updateParticipantsCheckboxes();
     });
@@ -190,6 +194,7 @@ function updateGlobalMembers() {
         }
     });
     generateShareLink(); // 更新分享連結以包含全局成員數據
+    renderNesoSummary(); // 更新 NESO 總結
 }
 
 // 函數：更新所有 BOSS 區塊中的參與人員勾選框
@@ -549,6 +554,7 @@ function updateAllocationsData() {
         };
     });
     generateShareLink();
+    renderNesoSummary();
 }
 
 // 函數：計算分帳結果（根據售價/手續費/NESO 與持有者，產生轉帳建議）
@@ -697,6 +703,50 @@ function calculateDistribution() {
     }
 
     if (warnings.length) showToast(warnings[0], 'error');
+
+    // 計算後也同步 NESO 總結（保險）
+    renderNesoSummary();
+}
+
+// NESO 總計與每人 NESO 統計
+function renderNesoSummary() {
+    const totalEl = document.getElementById('total-neso');
+    const tableBody = document.querySelector('#neso-summary-table tbody');
+    if (!totalEl || !tableBody) return;
+
+    const perPerson = {};
+    let grand = 0;
+
+    // 聚合 allocations 中的 NESO
+    for (const id in allocations) {
+        const bossData = allocations[id];
+        if (!bossData || !Array.isArray(bossData.selectedItems)) continue;
+        bossData.selectedItems.forEach(item => {
+            if (!item.isNeso) return;
+            const amt = Number(item.nesoAmount || 0);
+            if (amt <= 0) return;
+            grand += amt;
+            const owner = item.owner || '';
+            if (owner) perPerson[owner] = (perPerson[owner] || 0) + amt;
+        });
+    }
+
+    totalEl.textContent = `所有 BOSS NESO 總計：${grand}`;
+    tableBody.innerHTML = '';
+    const names = Object.keys(perPerson).sort((a,b) => perPerson[b]-perPerson[a]);
+    if (names.length === 0) {
+        const row = tableBody.insertRow();
+        const c = row.insertCell();
+        c.colSpan = 2;
+        c.textContent = '尚無 NESO 分配資料';
+        c.style.textAlign = 'center';
+        return;
+    }
+    names.forEach(name => {
+        const row = tableBody.insertRow();
+        row.insertCell().textContent = name;
+        row.insertCell().textContent = perPerson[name];
+    });
 }
 
 // 函數：生成分享連結
