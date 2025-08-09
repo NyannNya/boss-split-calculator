@@ -5,6 +5,68 @@ body {
     color: #333;
 }
 
+/* Global Members Section */
+#global-members-section {
+    margin-bottom: 30px;
+}
+
+#global-members-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.member-input-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.member-input-group label {
+    font-weight: bold;
+    color: #555;
+    flex-shrink: 0;
+}
+
+.member-input-group input[type="text"] {
+    flex-grow: 1;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 0.95em;
+}
+
+.member-input-group .remove-member-input {
+    background-color: #dc3545;
+    color: white;
+    padding: 8px 12px; /* 增加內邊距 */
+    border: none;
+    border-radius: 5px; /* 稍微增加圓角 */
+    cursor: pointer;
+    font-size: 0.95em; /* 稍微增加字體大小 */
+    margin-top: 0;
+    white-space: nowrap;
+}
+
+.member-input-group .remove-member-input:hover {
+    background-color: #c82333;
+}
+
+.item-card .neso-amount-input {
+    width: calc(100% - 20px); /* Adjust width */
+    margin-top: 5px;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    text-align: center;
+}
+
 .container {
     max-width: 1200px;
     margin: 0 auto;
@@ -30,6 +92,63 @@ h1 {
     color: #0056b3;
     text-shadow: 1px 1px 3px rgba(0,0,0,0.15);
 }
+
+/* Toolbar */
+#top-toolbar.toolbar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    background-color: #fafafa;
+    margin-bottom: 16px;
+}
+.toolbar-spacer { flex: 1; }
+.status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.9em;
+}
+.status::before {
+    content: '';
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+}
+.status-loading { background: #fff6e6; color: #a16207; border: 1px solid #fde3a7; }
+.status-loading::before { background: #f59e0b; }
+.status-success { background: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0; }
+.status-success::before { background: #10b981; }
+.status-error { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; }
+.status-error::before { background: #ef4444; }
+
+/* Toasts */
+#toast-container {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 9999;
+}
+.toast {
+    min-width: 240px;
+    max-width: 420px;
+    padding: 12px 14px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+    background: #333;
+    color: #fff;
+    opacity: 0.98;
+}
+.toast.success { background: #16a34a; }
+.toast.error { background: #dc2626; }
+.toast.info { background: #2563eb; }
 
 h2 {
     border-bottom: 3px solid #007bff;
@@ -102,15 +221,17 @@ section {
 button {
     background-color: #007bff;
     color: white;
-    padding: 12px 20px;
+    padding: 10px 18px; /* 調整按鈕大小 */
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    font-size: 1.1em;
+    font-size: 1em; /* 調整字體大小 */
     margin-top: 15px;
     transition: background-color 0.2s ease, transform 0.1s ease;
     white-space: nowrap;
 }
+button.secondary { background-color: #6b7280; }
+button.secondary:hover { background-color: #4b5563; }
 
 button:hover {
     background-color: #0056b3;
@@ -155,6 +276,8 @@ button:active {
 .boss-header .remove-boss-group {
     background-color: #dc3545;
     margin-top: 0;
+    padding: 8px 12px; /* 調整移除按鈕大小 */
+    font-size: 0.95em; /* 調整移除按鈕字體大小 */
 }
 
 .boss-header .remove-boss-group:hover {
@@ -326,7 +449,7 @@ button:active {
     box-sizing: border-box;
     margin-top: 15px;
     resize: vertical;
-    font-size: 0.95em;
+    font-size: 1em; /* 調整字體大小 */
     background-color: #f9f9f9;
     color: #333;
     display: block; /* Ensure it's visible */
@@ -376,9 +499,30 @@ button:active {
 
     .boss-header .remove-boss-group {
         width: 100%;
+        padding: 10px; /* 調整響應式移除按鈕大小 */
+        font-size: 1em; /* 調整響應式移除按鈕字體大小 */
     }
 
     .item-list {
         grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    }
+
+    .member-input-group {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .member-input-group label {
+        width: 100%;
+        margin-bottom: 5px;
+    }
+
+    .member-input-group input[type="text"] {
+        width: 100%;
+    }
+
+    .member-input-group .remove-member-input {
+        width: 100%;
+        margin-top: 10px;
     }
 }
